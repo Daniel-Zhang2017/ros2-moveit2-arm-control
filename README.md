@@ -11,7 +11,6 @@ cd ros2-moveit2-arm-control
 colcon build
 source install/setup.bash
 ```
-## Project Structure
 ```
 ## Repository Structure
 
@@ -32,7 +31,7 @@ src/
 │   └── launch/display.launch.xml  # Quick URDF visualization only
 ├── my_robot_interfaces       # Custom ROS 2 message definitions
 │   └── msg/PoseCommand.msg   # Custom pose command with RPY + Cartesian flag
-
+```
 
 ## System Overview
 This stack implements a standard `ros2_control` + MoveIt 2 pipeline:
