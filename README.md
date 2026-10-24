@@ -202,13 +202,16 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 
 >It hides the low-level ROS service / action calls, so you do not manually send action goals.
 
-Comparison: PTP Joint Planning vs Cartesian Planning
-Feature	PTP Joint Space Planning	Cartesian Path Planning
-Trajectory control	Only start & goal joint states	End-effector TCP path
-End-effector path	Curved, uncontrolled	Near straight line
-Computation cost	Low	High (IK at every sample)
-Singularity risk	Low	High
-Use cases	Pick & place, point reaching	Welding, grinding, dispensing, assembly
+## Comparison: PTP Joint Planning vs Cartesian Planning
+
+| Feature | PTP Joint Space Planning | Cartesian Path Planning |
+|---|---|---|
+| Trajectory control | Only start & goal joint states | End-effector TCP path |
+| End-effector path | Curved, uncontrolled | Near straight line |
+| Computation cost | Low | High (IK at every sample) |
+| Singularity risk | Low | High |
+| Use cases | Pick & place, point reaching | Welding, grinding, dispensing, assembly |
+
 **Safety Warning**
 
 >Do NOT set jump_threshold = 0 on a real robot.
