@@ -1,9 +1,15 @@
 # 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
-A complete ROS 2 Humble workspace for a 6-joint manipulator with parallel gripper, including robot description, MoveIt 2 planning config, hardware bringup, custom C++ motion commander and custom ROS 2 interfaces.
+A complete ROS 2 Humble workspace for a 6-joint manipulator with parallel gripper, including robot description, MoveIt 2 planning config, hardware bringup, **custom C++ motion commander** and custom ROS 2 interfaces.
 ```
 #installation dependencies
 sudo apt update
 sudo apt install ros-humble-moveit ros-humble-moveit-ros-planning-interface
+```
+```
+git clone https://github.com/Daniel-Zhang2017/ros2-moveit2-arm-control.git
+cd ros2-moveit2-arm-control
+colcon build
+source install/setup.bash
 ```
 ## Project Structure
 ```
@@ -176,26 +182,25 @@ ros2 launch moveit_setup_assistant setup_assistant.launch.py
 ```
 In the RViz2 Motion Planning panel:
 
-Set goal (drag interactive marker or joint slider), or adjust Start State, Goal State under the Planning/Query
+>Set goal (drag interactive marker or joint slider), or adjust Start State, Goal State under the Planning/Query
 
-Click Plan → preview path drawn, robot stays still
+>Click Plan → preview path drawn, robot stays still
 
-Then click Execute → robot moves. Or directly click Plan & Execute to combine two steps
+>Then click Execute → robot moves. Or directly click Plan & Execute to combine two steps
 
-Rviz motion planning/scene objects panel: The Scene Objects panel in the MoveIt RViz Motion Planning plugin is where you manage the collision environment. You use it to add, move, attach, or remove objects that the robot must avoid during motion planning.
+>Rviz motion planning/scene objects panel: The Scene Objects panel in the MoveIt RViz Motion Planning plugin is where you manage the collision environment. You use it to add, move, attach, or remove objects that the robot must avoid during motion planning.
 
-Overview
 MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_group_interface/move_group_interface.h).
 
-It acts as a high-level wrapper to communicate with the move_group node.
+>It acts as a high-level wrapper to communicate with the move_group node.
 
-You use it to command a robot planning group: set target pose / joint goal, run motion planning, execute trajectory, query robot state, perform Cartesian path planning, etc.
+>You use it to command a robot planning group: set target pose / joint goal, run motion planning, execute trajectory, query robot state, perform Cartesian path planning, etc.
 
 ✅ In short:
 
-MoveGroupInterface = the main C++ bridge between your user program and the MoveIt move_group server.
+>MoveGroupInterface = the main C++ bridge between your user program and the MoveIt move_group server.
 
-It hides the low-level ROS service / action calls, so you do not manually send action goals.
+>It hides the low-level ROS service / action calls, so you do not manually send action goals.
 
 Comparison: PTP Joint Planning vs Cartesian Planning
 Feature	PTP Joint Space Planning	Cartesian Path Planning
@@ -204,10 +209,11 @@ End-effector path	Curved, uncontrolled	Near straight line
 Computation cost	Low	High (IK at every sample)
 Singularity risk	Low	High
 Use cases	Pick & place, point reaching	Welding, grinding, dispensing, assembly
-Safety Warning
-Do NOT set jump_threshold = 0 on a real robot.
+**Safety Warning**
 
-Cartesian IK may switch to a different joint solution and cause sudden, unsafe large joint motion.
+>Do NOT set jump_threshold = 0 on a real robot.
 
-Always perform full simulation validation and enable collision checking before real robot operation.
+>Cartesian IK may switch to a different joint solution and cause sudden, unsafe large joint motion.
+
+>Always perform full simulation validation and enable collision checking before real robot operation.
 
