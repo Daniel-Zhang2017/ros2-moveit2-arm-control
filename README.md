@@ -1,33 +1,32 @@
-```
 # 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
 A complete ROS 2 Humble workspace for a 6-joint manipulator with parallel gripper, including robot description, MoveIt 2 planning config, hardware bringup, custom C++ motion commander and custom ROS 2 interfaces.
 ```
-\#installation dependencies
+#installation dependencies
 sudo apt update
 sudo apt install ros-humble-moveit ros-humble-moveit-ros-planning-interface
 ```
 ## Project Structure
 ```
+## Repository Structure
+
 src/
 ├── my_moveit_config          # Primary MoveIt 2 configuration (SRDF, kinematics, controllers, launchers)
-│   ├── config/                # SRDF, URDF/xacro, kinematics.yaml, joint limits, controller params, RViz config
-│   └── launch/                # auto-generated MoveIt launch files (move_group, demo, rsp, spawn controllers)
-├── my_robot_bringup           # System bringup package (master launch file)
-│   ├── config/                # RViz config + ros2_control controller yaml
-│   └── launch/my_robot.launch.xml  # Main entry launch: robot_state_publisher + ros2_control + move_group + RViz
-├── my_robot_commander_cpp     # C++ MoveGroupInterface motion commander node (this is your control program)
-│   └── src/
-│       ├── commander_template.cpp  # Main commander node: topic-controlled arm + gripper
-│       ├── test_moveit.cpp
-│       └── test2_moveit.cpp
-├── my_robot_description       # Robot URDF / Xacro model
-│   ├── urdf/                  # Arm, gripper, common properties, ros2_control xacro
-│   └── launch/display.launch.xml  # Quick URDF visualization only
-├── my_robot_interfaces        # Custom ROS 2 message definitions
-│   └── msg/PoseCommand.msg    # Custom pose command with RPY + Cartesian flag
-└── my_robot_moveit_config     # Duplicated MoveIt config (legacy / backup, not used in bringup)
+│   ├── config/               # SRDF, URDF/xacro, kinematics.yaml, joint limits, controller params, RViz config
+│   └── launch/               # auto-generated MoveIt launch files (move_group, demo, rsp, spawn controllers)
+├── my_robot_bringup          # System bringup package (master launch file)
+│   ├── config/               # RViz config + ros2_control controller yaml
+│   └── launch/my_robot.launch.xml  # Main entry launch: robot_state_publisher + ros2_control + move_group + RViz
+├── my_robot_commander_cpp    # C++ MoveGroupInterface motion commander node (this is your control program)
+│   └── src/
+│       ├── commander_template.cpp  # Main commander node: topic-controlled arm + gripper
+│       ├── test_moveit.cpp
+│       └── test2_moveit.cpp
+├── my_robot_description      # Robot URDF / Xacro model
+│   ├── urdf/                 # Arm, gripper, common properties, ros2_control xacro
+│   └── launch/display.launch.xml  # Quick URDF visualization only
+├── my_robot_interfaces       # Custom ROS 2 message definitions
+│   └── msg/PoseCommand.msg   # Custom pose command with RPY + Cartesian flag
 
-```
 
 ## System Overview
 This stack implements a standard `ros2_control` + MoveIt 2 pipeline:
@@ -151,94 +150,64 @@ ros2 topic pub /open_gripper example_interfaces/msg/Bool "{data: false}"
 ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [0, -0.785, 1.57, -0.785, 0, 0]}"
 ```
 
-```
 #Notes: 
-\#The core difference between Python and XML launch files in ROS 2 lies in flexibility versus declarative simplicity. Python offers powerful #programming capabilities and lower-level access, making it suitable for complex logic; XML is more concise and declarative, making it suitable #for simple, straightforward startup tasks and users migrating from ROS 1 .
 
-```
+The core difference between Python and XML launch files in ROS 2 lies in flexibility versus declarative simplicity. Python offers powerful programming capabilities and lower-level access, making it suitable for complex logic; XML is more concise and declarative, making it suitable for simple, straightforward startup tasks and users migrating from ROS 1.
 
-\## Overview
 
->MoveIt 2 is a widely used motion planning framework in ROS 2. It is responsible for generating motion trajectories based on robot models, joint limits, collision information, and target states, though it does not directly control the motors.
+> MoveIt 2 is a widely used motion planning framework in ROS 2. It is responsible for generating motion trajectories based on robot models, joint limits, collision information, and target states, though it does not directly control the motors.
 
-\### Configure a robotic arm visually using the MoveIt Setup Assistant
+### Configure a robotic arm visually using the MoveIt Setup Assistant
 
 MoveIt Setup Assistant (MSA) — Description
 
-> 
+> **MoveIt Setup Assistant** is the official GUI wizard tool for MoveIt 2 (ROS 2 Humble/Iron/Jazzy), used to **generate all required MoveIt configuration packages from your robot URDF/Xacro**. It automates the tedious YAML / SRDF / controller config creation, so you can quickly get your manipulator ready for planning, RViz demo, ros2_control and execution.
 
-> \*\*MoveIt Setup Assistant\*\* is the official GUI wizard tool for MoveIt 2 (ROS 2 Humble/Iron/Jazzy), used to \*\*generate all required MoveIt configuration packages from your robot URDF/Xacro\*\*. It automates the tedious YAML / SRDF / controller config creation, so you can quickly get your manipulator ready for planning, RViz demo, ros2\_control and execution.
+> A planning group defines a collection of joints and links that MoveIt will treat as a single controllable kinematic subsystem, such as a robotic arm or gripper. Each planning group is assigned an inverse kinematics solver, search parameters and a default motion planner.
 
->A planning group defines a collection of joints and links that MoveIt will treat as a single controllable kinematic subsystem, such as a robotic arm or gripper. Each planning group is assigned an inverse kinematics solver, search parameters and a default motion planner.
-
-
->\*\*Inverse Kinematics (IK)\*\* solves the problem:
-
-> 
+> **Inverse Kinematics (IK)** solves the problem:
+>
 > Given a desired end-effector Cartesian pose (position + orientation in 3D space), calculate the corresponding set of joint angles for your robot arm.
 
->Forward kinematics does the opposite: input joint angles → compute end-effector pose.
+> Forward kinematics does the opposite: input joint angles → compute end-effector pose.
 
+```bash
+ros2 launch moveit_setup_assistant setup_assistant.launch.py
 ```
-ros2 launch moveit\_setup\_assistant setup\_assistant.launch.py 
-```
-
 In the RViz2 Motion Planning panel:
 
->1. Set goal (drag interactive marker or joint slider), or adjust Start State, Goal State under the Planning/Query
+Set goal (drag interactive marker or joint slider), or adjust Start State, Goal State under the Planning/Query
 
->2. Click \*\*Plan\*\* → preview path drawn, robot stays still
+Click Plan → preview path drawn, robot stays still
 
->3. Then click \*\*Execute\*\* → robot moves Or directly click \*\*Plan \& Execute\*\* to combine two steps
+Then click Execute → robot moves. Or directly click Plan & Execute to combine two steps
 
->4. Rviz motionplaning/scene objects panel: The Scene Objects panel in the MoveIt RViz Motion Planning plugin is where you manage the collision environment. You use it to add, move, attach, or remove objects that the robot must avoid during motion planning.
+Rviz motion planning/scene objects panel: The Scene Objects panel in the MoveIt RViz Motion Planning plugin is where you manage the collision environment. You use it to add, move, attach, or remove objects that the robot must avoid during motion planning.
 
+Overview
+MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_group_interface/move_group_interface.h).
 
-\## Overview
-
-`MoveGroupInterface` is the \*\*core C++ API class\*\* in MoveIt2 (header: `moveit/move\_group\_interface/move\_group\_interface.h`).
-
-It acts as a high-level wrapper to communicate with the `move\_group` node.
+It acts as a high-level wrapper to communicate with the move_group node.
 
 You use it to command a robot planning group: set target pose / joint goal, run motion planning, execute trajectory, query robot state, perform Cartesian path planning, etc.
 
+✅ In short:
 
+MoveGroupInterface = the main C++ bridge between your user program and the MoveIt move_group server.
 
-> ✅ In short:
+It hides the low-level ROS service / action calls, so you do not manually send action goals.
 
-> \*\*MoveGroupInterface = the main C++ bridge between your user program and the MoveIt move\_group server.\*\*
-
-> It hides the low-level ROS service / action calls, so you do not manually send action goals.
-
-
-\## Comparison: PTP Joint Planning vs Cartesian Planning
-
-
-
-| Feature | PTP Joint Space Planning | Cartesian Path Planning |
-
-|---|---|---|
-
-| Trajectory control | Only start \& goal joint states | End-effector TCP path |
-
-| End-effector path | Curved, uncontrolled | Near straight line |
-
-| Computation cost | Low | High (IK at every sample) |
-
-| Singularity risk | Low | High |
-
-| Use cases | Pick \& place, point reaching | Welding, grinding, dispensing, assembly |
-
-
-
-\## Safety Warning
-
-Do NOT set `jump\_threshold = 0` on a real robot.
-
+Comparison: PTP Joint Planning vs Cartesian Planning
+Feature	PTP Joint Space Planning	Cartesian Path Planning
+Trajectory control	Only start & goal joint states	End-effector TCP path
+End-effector path	Curved, uncontrolled	Near straight line
+Computation cost	Low	High (IK at every sample)
+Singularity risk	Low	High
+Use cases	Pick & place, point reaching	Welding, grinding, dispensing, assembly
+Safety Warning
+Do NOT set jump_threshold = 0 on a real robot.
 
 Cartesian IK may switch to a different joint solution and cause sudden, unsafe large joint motion.
 
 Always perform full simulation validation and enable collision checking before real robot operation.
-
-```
 
