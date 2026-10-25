@@ -195,7 +195,34 @@ ros2 topic pub /open_gripper example_interfaces/msg/Bool "{data: false}"
 # Send 6 joint target (radians)
 ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [0, -0.785, 1.57, -0.785, 0, 0]}"
 ```
+![Robot arm demo](project.assets/raw_capture.mp4)
+*Video 1: Demonstration of 6-DoF robotic arm and gripper motion playback from ROS 2 bag recording.*
 
+>**Capture the RViz window into `raw_capture.mp4`**
+
+> Step 1: Capture RViz window (new terminal)
+
+> First find the window ID of RViz:
+
+```
+xwininfo
+```
+
+>Then click your RViz window. You will see something like:
+
+```
+xwininfo: Window id: 0x5800004 "RViz"
+```
+
+>Copy that Window ID number (e.g. `0x5800004`).
+
+>Run capture (replace `0x5800004` with your own window id):
+
+```
+ffmpeg -y -f x11grab -window_id 0x5800004 -framerate 30 -i :0.0 raw_capture.mp4
+#- `-framerate 30`: capture at 30fps
+#- Press `q` in this ffmpeg terminal to stop recording.
+```
 # Notes: 
 
 The core difference between Python and XML launch files in ROS 2 lies in flexibility versus declarative simplicity. Python offers powerful programming capabilities and lower-level access, making it suitable for complex logic; XML is more concise and declarative, making it suitable for simple, straightforward startup tasks and users migrating from ROS 1.
