@@ -1,6 +1,6 @@
 # 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
 A complete ROS 2 Humble workspace for a 6-joint manipulator with parallel gripper, including robot description, MoveIt 2 planning config, hardware bringup, **custom C++ motion commander** and custom ROS 2 interfaces.
-```
+
 **Robotic Arm Control System Architecture**
 
 1. Robot Modeling Layer
