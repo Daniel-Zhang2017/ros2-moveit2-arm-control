@@ -1,8 +1,11 @@
 # 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
 A complete ROS 2 Humble workspace for a 6-joint manipulator with parallel gripper, including robot description, MoveIt 2 planning config, hardware bringup, **custom C++ motion commander** and custom ROS 2 interfaces.
 
-**Robotic Arm Control System Architecture**
+In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the Commander node via topics, services, or actions. The Commander node calls MoveIt 2 through the MoveIt API to perform kinematics computation, collision detection, and trajectory planning. The resulting joint trajectory is then sent through the MoveIt controller to the trajectory controller in ros2_control, which further converts it into control commands for the real robotic arm or simulated hardware. During hardware execution, state information such as joint positions and velocities is continuously returned; ros2_control publishes these states as joint states, and robot_state_publisher then publishes TF coordinate transforms in combination with the URDF model, allowing MoveIt and RViz to obtain the current robot pose.
 
+```
+**Robotic Arm Control System Architecture**
+```
 1. Robot Modeling Layer
 First, use URDF and Xacro to describe the links, joints, motion ranges, collision models, and mounting relationships of the robotic arm and gripper, forming a digital structural model of the robot. This model answers questions such as "what is the robot composed of, how can each joint move, and where is the end effector located." Subsequently, robot_state_publisher publishes TF coordinate transforms based on the URDF model and joint states, and RViz displays the current pose of the robotic arm accordingly. Therefore, URDF is responsible for defining the structure, joint_states reflects the current joint states, and TF and RViz are responsible for visualizing the states.
 
@@ -14,8 +17,6 @@ At the trajectory execution layer, the project uses ros2_control to establish a 
 
 4. Upper-Layer Task Control
 In the upper-layer task control part, the project implements a Commander node based on the MoveIt C++ API. This node encapsulates robotic arm control into functions such as named pose control, joint angle control, end-effector pose control, Cartesian path control, and gripper open/close control, and receives external commands via ROS 2 topics. External nodes can publish joint targets, gripper open/close commands, or end-effector pose targets; after receiving the messages, the Commander calls MoveGroupInterface to set the target, request MoveIt planning, and execute the trajectory. In this way, upper-layer vision, task planning, or human interaction modules do not need to directly operate the controllers; they only need to send task targets to the Commander.
-
-In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the Commander node via topics, services, or actions. The Commander node calls MoveIt 2 through the MoveIt API to perform kinematics computation, collision detection, and trajectory planning. The resulting joint trajectory is then sent through the MoveIt controller to the trajectory controller in ros2_control, which further converts it into control commands for the real robotic arm or simulated hardware. During hardware execution, state information such as joint positions and velocities is continuously returned; ros2_control publishes these states as joint states, and robot_state_publisher then publishes TF coordinate transforms in combination with the URDF model, allowing MoveIt and RViz to obtain the current robot pose.
 
 5. Overall Control Chain
 The control chain of the entire project can be summarized as:
@@ -38,7 +39,8 @@ Other nodes → Commander → MoveIt → ros2_control → Hardware
 
 State feedback chain:
 Hardware → ros2_control → joint_states → robot_state_publisher → TF → MoveIt / RViz
-
+```
+```
 #installation dependencies
 sudo apt update
 sudo apt install ros-humble-moveit ros-humble-moveit-ros-planning-interface
