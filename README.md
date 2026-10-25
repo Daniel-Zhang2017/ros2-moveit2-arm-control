@@ -281,3 +281,9 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 
 >Always perform full simulation validation and enable collision checking before real robot operation.
 
+
+## Related Projects
+
+- [roarm_ws](https://github.com/Daniel-Zhang2017/roarm_ws) — real arm control and motion
+
+- [ros2-robotics-projects](https://github.com/Daniel-Zhang2017/ros2-robotics-projects) — autonomous mobile robots and robotic arms
