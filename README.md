@@ -196,7 +196,7 @@ ros2 topic pub /open_gripper example_interfaces/msg/Bool "{data: false}"
 ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [0, -0.785, 1.57, -0.785, 0, 0]}"
 ```
 <video controls muted playsinline width="720">
-  <source src="./project.assets/raw_capture.mp4" type="video/mp4">
+  <source src="project.assets/raw_capture.mp4" type="video/mp4">
   Your browser does not support video playback.
 </video>
 <p><em>Video 1: Demonstration of 6-DoF robotic arm and gripper motion playback from ROS 2 bag recording.</em></p>
