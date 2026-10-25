@@ -195,8 +195,11 @@ ros2 topic pub /open_gripper example_interfaces/msg/Bool "{data: false}"
 # Send 6 joint target (radians)
 ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [0, -0.785, 1.57, -0.785, 0, 0]}"
 ```
-![Robot arm demo](project.assets/raw_capture.mp4)
-*Video 1: Demonstration of 6-DoF robotic arm and gripper motion playback from ROS 2 bag recording.*
+<video controls muted playsinline width="720">
+  <source src="./project.assets/raw_capture.mp4" type="video/mp4">
+  Your browser does not support video playback.
+</video>
+<p><em>Video 1: Demonstration of 6-DoF robotic arm and gripper motion playback from ROS 2 bag recording.</em></p>
 
 >**Capture the RViz window into `raw_capture.mp4`**
 
@@ -207,16 +210,9 @@ ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [
 ```
 xwininfo
 ```
+>Then click your RViz window. You will see something like: xwininfo: Window id: 0x5800004 "RViz"
 
->Then click your RViz window. You will see something like:
-
-```
-xwininfo: Window id: 0x5800004 "RViz"
-```
-
->Copy that Window ID number (e.g. `0x5800004`).
-
->Run capture (replace `0x5800004` with your own window id):
+>Copy that Window ID number (e.g. `0x5800004`). Run capture (replace `0x5800004` with your own window id):
 
 ```
 ffmpeg -y -f x11grab -window_id 0x5800004 -framerate 30 -i :0.0 raw_capture.mp4
