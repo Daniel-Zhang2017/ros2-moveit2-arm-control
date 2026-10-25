@@ -1,7 +1,9 @@
 # 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
-A complete ROS 2 Humble workspace for a 6-joint manipulator with parallel gripper, including robot description, MoveIt 2 planning config, hardware bringup, **custom C++ motion commander** and custom ROS 2 interfaces.
+A complete ROS 2 Humble workspace for a **6-joint manipulator with a parallel gripper**, including robot description, MoveIt 2 planning config, hardware bringup, **custom C++ motion commander**, and custom ROS 2 interfaces.
 
->In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the Commander node via topics, services, or actions. The **Commander node** calls MoveIt 2 through the MoveIt API to perform kinematics computation, collision detection, and trajectory planning. The resulting joint trajectory is then sent through the MoveIt controller to the trajectory controller in ros2_control, which further converts it into control commands for the real robotic arm or simulated hardware. During hardware execution, state information such as joint positions and velocities is continuously returned; ros2_control publishes these states as joint states, and robot_state_publisher then publishes TF coordinate transforms in combination with the URDF model, allowing MoveIt and RViz to obtain the current robot pose.
+>In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
+
+>The **Commander node** calls MoveIt 2 through the MoveIt API to perform kinematics computation, collision detection, and trajectory planning. The resulting joint trajectory is then sent through the MoveIt controller to the trajectory controller in ros2_control, which further converts it into control commands for the real robotic arm or simulated hardware. During hardware execution, state information such as joint positions and velocities is continuously returned; ros2_control publishes these states as joint states, and robot_state_publisher then publishes TF coordinate transforms in combination with the URDF model, allowing MoveIt and RViz to obtain the current robot pose.
 
 **Robotic Arm Control System Architecture**
 ```
