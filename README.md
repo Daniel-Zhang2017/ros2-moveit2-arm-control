@@ -52,6 +52,8 @@ cd ros2-moveit2-arm-control
 colcon build
 source install/setup.bash
 ```
+*Video 1: RoArm-M2 MoveIt joint command trajectory replay, recorded at 100 Hz joint states.*
+https://github.com/user-attachments/assets/a827dda0-dc04-47a8-88f3-8c268dc0bbe3
 
 ## Repository Structure
 ```
@@ -195,9 +197,6 @@ ros2 topic pub /open_gripper example_interfaces/msg/Bool "{data: false}"
 # Send 6 joint target (radians)
 ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [0, -0.785, 1.57, -0.785, 0, 0]}"
 ```
-<video controls muted playsinline width="700">
-  <source src="./project.assets/raw_capture.mp4" type="video/mp4">
-</video>
 
 >**Capture the RViz window into `raw_capture.mp4`**
 
