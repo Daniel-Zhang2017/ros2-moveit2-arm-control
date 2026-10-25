@@ -53,6 +53,7 @@ colcon build
 source install/setup.bash
 ```
 *Video 1: RoArm-M2 MoveIt joint command trajectory replay, recorded at 100 Hz joint states.*
+
 https://github.com/user-attachments/assets/a827dda0-dc04-47a8-88f3-8c268dc0bbe3
 
 ## Repository Structure
