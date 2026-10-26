@@ -287,6 +287,33 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 
 >Always perform full simulation validation and enable collision checking before real robot operation.
 
+**real arm control and motion**: roarm_driver.py
+A **simple ROS 2 bridge node** between ROS2 `JointState` messages and the Waveshare RoArm SDK serial API.
+
+> 
+> Core logic: It **subscribes to `/joint_states`**, extracts joint angles, repacks them into the order the RoArm hardware expects, then sends them over USB serial to the physical arm.
+> 
+> 
+> ⚠️ Important design note: This is **not a standard ros2_control hardware interface**. This is a custom, lightweight driver that directly consumes `JointState` topics.
+
+Grant read and write permissions to the serial device using the following command (replace /dev/ttyUSB0 with your actual device path):
+```
+sudo chmod 666 /dev/ttyUSB0
+```
+Run the driver node:
+```
+ros2 run roarm_driver roarm_driver serial_port:=/dev/ttyUSB0
+```
+🚨 **This is the root architectural quirk you need to understand:**
+>Standard ros2_control pipeline:
+
+>`MoveIt → ros2_control controller (hand_controller) → hardware_interface → send command to robot`
+
+>But this driver’s pipeline is:
+
+>`MoveIt → hand_controller → controller publishes /joint_states (target) → THIS NODE SUBSCRIBES /joint_states → send serial command to >RoArm`
+
+>So the `hand_controller` (joint_trajectory_controller) outputs target positions as `/joint_states`, then this driver picks it up and forwards to hardware.
 
 ## Related Projects
 
