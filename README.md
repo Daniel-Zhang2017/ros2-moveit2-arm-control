@@ -58,9 +58,7 @@ https://github.com/user-attachments/assets/a827dda0-dc04-47a8-88f3-8c268dc0bbe3
 
 *Video 2: Real robotic arm control and motion*
 
-https://github.com/user-attachments/assets/d184c61d-5491-44b5-a6ce-29e48139bd37
-
-
+https://github.com/user-attachments/assets/c0560e33-5237-4fdc-841b-7b8853d7089b
 
 ## Repository Structure
 ```
@@ -287,7 +285,7 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 
 >Always perform full simulation validation and enable collision checking before real robot operation.
 
-**Real robotic arm control and motion**
+# Real robotic arm control and motion
 
 roarm_driver.py:  A **simple ROS 2 bridge node** between ROS2 `JointState` messages and the Waveshare RoArm SDK serial API.
 
