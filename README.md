@@ -52,9 +52,15 @@ cd ros2-moveit2-arm-control
 colcon build
 source install/setup.bash
 ```
-*Video 1: Arm motion demo-RoArm-M2 MoveIt joint command trajectory replay, recorded at 100 Hz joint states.*
+*Video 1: Arm motion demo-RoArm-M2 MoveIt joint command trajectory replay, recorded at 100 Hz joint states*
 
 https://github.com/user-attachments/assets/a827dda0-dc04-47a8-88f3-8c268dc0bbe3
+
+*Video 2: Real robotic arm control and motion*
+
+https://github.com/user-attachments/assets/d184c61d-5491-44b5-a6ce-29e48139bd37
+
+
 
 ## Repository Structure
 ```
