@@ -62,11 +62,11 @@ https://github.com/user-attachments/assets/c8ac123a-d9f0-467d-afe4-b9e7536e7b07
 
 *Video 3: Real arm Cartesian path*
 
-https://github.com/user-attachments/assets/e8f8f298-0a24-4380-b806-d75002d9563c
+https://github.com/user-attachments/assets/b6f72d57-6e1e-4b73-a8a3-074690e890e5
 
 *Video 4: Real robotic arm control and motion*
 
-https://github.com/user-attachments/assets/c0560e33-5237-4fdc-841b-7b8853d7089b
+https://github.com/user-attachments/assets/7caf02ca-e448-450b-a686-7556f6876fa5
 
 ## Repository Structure
 ```
