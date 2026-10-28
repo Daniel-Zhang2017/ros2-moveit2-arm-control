@@ -1,5 +1,5 @@
 # 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
-A complete ROS 2 Humble workspace for a **6-joint manipulator with a parallel gripper**, including robot description, MoveIt 2 planning config, hardware bringup, **custom C++ motion commander**, and custom ROS 2 interfaces.
+A complete ROS 2 Humble workspace for a **6-joint manipulator with a parallel gripper**, including robot description, MoveIt 2 planning config, hardware bringup, **custom C++ motion commander**, MoveIt2 MTC (MoveIt Task Constructor), and custom ROS 2 interfaces.
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
@@ -231,12 +231,12 @@ ffmpeg -y -f x11grab -window_id 0x5800004 -framerate 30 -i :0.0 raw_capture.mp4
 ```
 # Notes: 
 
-The core difference between Python and XML launch files in ROS 2 lies in flexibility versus declarative simplicity. Python offers powerful programming capabilities and lower-level access, making it suitable for complex logic; XML is more concise and declarative, making it suitable for simple, straightforward startup tasks and users migrating from ROS 1.
+1. The core difference between Python and XML launch files in ROS 2 lies in flexibility versus declarative simplicity. Python offers powerful programming capabilities and lower-level access, making it suitable for complex logic; XML is more concise and declarative, making it suitable for simple, straightforward startup tasks and users migrating from ROS 1.
 
 
-> MoveIt 2 is a widely used motion planning framework in ROS 2. It is responsible for generating motion trajectories based on robot models, joint limits, collision information, and target states, though it does not directly control the motors.
+> 2. MoveIt 2 is a widely used motion planning framework in ROS 2. It is responsible for generating motion trajectories based on robot models, joint limits, collision information, and target states, though it does not directly control the motors.
 
-### Configure a robotic arm visually using the MoveIt Setup Assistant
+### 3. Configure a robotic arm visually using the MoveIt Setup Assistant
 
 MoveIt Setup Assistant (MSA) — Description
 
@@ -275,7 +275,7 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 
 >It hides the low-level ROS service / action calls, so you do not manually send action goals.
 
-## Comparison: PTP Joint Planning vs Cartesian Planning
+## 4. Comparison: PTP Joint Planning vs Cartesian Planning
 
 | Feature | PTP Joint Space Planning | Cartesian Path Planning |
 |---|---|---|
@@ -285,7 +285,7 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 | Singularity risk | Low | High |
 | Use cases | Pick & place, point reaching | Welding, grinding, dispensing, assembly |
 
-**Safety Warning**
+**5. Safety Warning**
 
 >Do NOT set jump_threshold = 0 on a real robot.
 
@@ -293,7 +293,7 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 
 >Always perform full simulation validation and enable collision checking before real robot operation.
 
-# Real robotic arm control and motion
+# 6. Real robotic arm control and motion
 
 roarm_driver.py:  A **simple ROS 2 bridge node** between ROS2 `JointState` messages and the Waveshare RoArm SDK serial API.
 
@@ -321,6 +321,32 @@ ros2 run roarm_driver roarm_driver serial_port:=/dev/ttyUSB0
 >`MoveIt → hand_controller → controller publishes /joint_states (target) → THIS NODE SUBSCRIBES /joint_states → send serial command to >RoArm`
 
 >So the `hand_controller` (joint_trajectory_controller) outputs target positions as `/joint_states`, then this driver picks it up and forwards to hardware.
+
+7. MTC solves complex manipulation tasks by splitting the job into composable `Stage`s. Instead of one-shot motion planning, MTC explores alternative solution branches, backtracks on failure, and manages `PlanningScene` states (attach/detach objects) automatically.
+
+> Paper: *MoveIt! Task Constructor for Task-Level Motion Planning*, ICRA 2019
+
+## 📌 What is MTC?
+
+>MTC is a task planning framework built on top of MoveIt2.
+
+>- Decompose manipulation into serial/parallel stages
+
+>- Pass `InterfaceState` between stages: robot state, planning scene, collision objects, candidate solutions
+
+>- Automatic backtracking: if one grasp/plan fails, try the next candidate
+
+>- Native support for `attach` / `detach` for pick-and-place
+
+- RViz MTC plugin for visual debugging of all candidate branches and costs
+
+Three core stage types:
+
+>1. **Generator**: Generate candidate solutions (e.g. `GenerateGraspPose`)
+>2. **Propagator**: Transform state (MoveTo, MoveRelative, ModifyPlanningScene)
+> 3. **Connector**: Plan motion between two states (`Connect`)
+
+>Containers: `Serial`, `Parallel` to build task graphs.
 
 ## Related Projects
 
