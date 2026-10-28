@@ -347,6 +347,7 @@ Three core stage types:
 >1. **Generator**: Generate candidate solutions (e.g. `GenerateGraspPose`)
 >2. **Propagator**: Transform state (MoveTo, MoveRelative, ModifyPlanningScene)
 > 3. **Connector**: Plan motion between two states (`Connect`)
+
 >Containers: `Serial`, `Parallel` to build task graphs.
 
 ## Related Projects
