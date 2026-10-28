@@ -322,7 +322,9 @@ ros2 run roarm_driver roarm_driver serial_port:=/dev/ttyUSB0
 
 >So the `hand_controller` (joint_trajectory_controller) outputs target positions as `/joint_states`, then this driver picks it up and forwards to hardware.
 
-## 7. MTC solves complex manipulation tasks by splitting the job into composable `Stage`s. Instead of one-shot motion planning, MTC explores alternative solution branches, backtracks on failure, and manages `PlanningScene` states (attach/detach objects) automatically.
+## 7. MTC solves complex manipulation tasks by splitting the job into composable `Stage`s. 
+
+Instead of one-shot motion planning, MTC explores alternative solution branches, backtracks on failure, and manages `PlanningScene` states (attach/detach objects) automatically.
 
 > Paper: *MoveIt! Task Constructor for Task-Level Motion Planning*, ICRA 2019
 
