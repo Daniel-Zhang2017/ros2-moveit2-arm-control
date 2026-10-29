@@ -150,24 +150,64 @@ ros2 launch my_robot_bringup my_robot.launch.xml
 
 ### `my_robot_commander_cpp`
 
-C++ commander node (`commander_template.cpp`):
+C++ MoveIt2 commander node (`commander_template.cpp`) for robotic arm + gripper control.
+It instantiates two independent `MoveGroupInterface` planners: `arm` and `gripper`.
+Supports joint-space, named-pose, standard MoveIt planning and local Cartesian straight-line planning, plus end-effector pose feedback.
 
-- Two MoveGroup instances: `"arm"` and `"gripper"`
-- Subscribers:
-  - `/open_gripper` (`example_interfaces/msg/Bool`): `true` open, `false` close
-  - `/joint_command` (`example_interfaces/msg/Float64MultiArray`): 6 joint angles for arm
-  - `/pose_command` (`my_robot_interfaces/msg/PoseCommand`): `x,y,z,roll,pitch,yaw,cartesian_path`
-- API:
-  - `goToNamedTarget(name)`: move arm to SRDF named pose
-  - `goToJointTarget(joints)`: joint-space target
-  - `goToPoseTarget(x,y,z,r,p,y, cartesian_path)`: pose target
-    - `cartesian_path=false`: normal MoveIt collision-aware planning
-    - `cartesian_path=true`: local `computeCartesianPath` straight line
-  - `openGripper()` / `closeGripper()`: gripper named states
+## Topics
 
+### Subscribed
+
+表格
+
+| Topic | Message Type | Description |
+| --- | --- | --- |
+| `/open_gripper` | `example_interfaces/msg/Bool` | `true` = open gripper; `false` = close gripper |
+| `/joint_command` | `example_interfaces/msg/Float64MultiArray` | 6 joint angles for the arm (joint-space target) |
+| `/pose_command` | `my_robot_interfaces/msg/PoseCommand` | Pose target: `x, y, z, roll, pitch, yaw, cartesian_path` |
+
+### Published
+
+表格
+
+| Topic | Message Type | Description |
+| --- | --- | --- |
+| `/current_ee_pose_rpy` | `my_robot_interfaces/msg/PoseCommand` | 10 Hz end-effector feedback pose; `cartesian_path` field is always `false` for state reporting |
+
+## C++ API
+
+```
+// Move arm to a predefined named pose from SRDF
+void goToNamedTarget(const std::string & name);
+
+// Joint-space target (6 arm joint angles)
+void goToJointTarget(const std::vector<double> & joints);
+
+// Pose target
+// cartesian_path = false: standard MoveIt collision-aware planning via move_group
+// cartesian_path = true: local straight-line Cartesian path using computeCartesianPath
+void goToPoseTarget(double x, double y, double z, double roll, double pitch, double yaw, bool cartesian_path = false);
+
+// Gripper control, uses named states defined in SRDF
+void openGripper();
+void closeGripper();
+```
+
+## Run
+```
+ros2 launch my_moveit_config demo.launch.py
+```
+```
+# Launch your MoveIt stack first with use_sim_time:=true
+ros2 run my_robot_commander_cpp commander_template --ros-args -p use_sim_time:=true
+```
+Then you can echo this standard topic right away:
+
+```
+ros2 topic echo /current_ee_pose_rpy
+```
 > 
-> ⚠️ Important limitation: `computeCartesianPath` runs locally inside this commander node. You need to load `kinematics.yaml` as node parameters into the commander to avoid `No kinematics plugins defined` warning and 0% cartesian fraction. Normal pose planning sends goals to `/move_group` and uses the move_group process’s kinematics settings.
-
+> Important: your MoveIt launch must also pass `use_sim_time:=true` for simulation clock alignment.
 ### `my_robot_interfaces`
 
 Custom message `PoseCommand.msg`:
