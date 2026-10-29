@@ -274,6 +274,12 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 
 >You use it to command a robot planning group: set target pose / joint goal, run motion planning, execute trajectory, query robot state, perform Cartesian path planning, etc.
 
+✅ In short:
+
+>MoveGroupInterface = the main C++ bridge between your user program and the MoveIt move_group server.
+
+>It hides the low-level ROS service / action calls, so you do not manually send action goals.
+
 After finishing the setup in the MSA, you need to check moveit_controllers.yaml and add the following code:
 ```
 action_ns: follow_joint_trajectory
@@ -299,11 +305,6 @@ Then run
 ros2 launch my_arm_config demo.launch.py
 ```
 
-✅ In short:
-
->MoveGroupInterface = the main C++ bridge between your user program and the MoveIt move_group server.
-
->It hides the low-level ROS service / action calls, so you do not manually send action goals.
 
 ## 4. Comparison: PTP Joint Planning vs Cartesian Planning
 
