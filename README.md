@@ -158,8 +158,6 @@ Supports joint-space, named-pose, standard MoveIt planning and local Cartesian s
 
 ### Subscribed
 
-表格
-
 | Topic | Message Type | Description |
 | --- | --- | --- |
 | `/open_gripper` | `example_interfaces/msg/Bool` | `true` = open gripper; `false` = close gripper |
@@ -167,8 +165,6 @@ Supports joint-space, named-pose, standard MoveIt planning and local Cartesian s
 | `/pose_command` | `my_robot_interfaces/msg/PoseCommand` | Pose target: `x, y, z, roll, pitch, yaw, cartesian_path` |
 
 ### Published
-
-表格
 
 | Topic | Message Type | Description |
 | --- | --- | --- |
