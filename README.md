@@ -1,5 +1,5 @@
 # 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
-A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), and custom ROS 2 interfaces (**using your own arm control commands rather than the code from the arm manufacturer**).
+A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), and custom ROS 2 interfaces & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**).
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
@@ -90,7 +90,7 @@ src/
 ├── my_arm_config       # Custom arm config for Roarm
 ├── roarm_description       # roam URDF/Xacro model
 ├── roarm_driver       # roam driver
-├── roarm_moveit       # roarm moveit, the code from the arm manufacturer
+├── roarm_moveit       # roarm MoveIt, the code from the arm manufacturer
 
 ```
 
@@ -103,6 +103,11 @@ This stack implements a standard `ros2_control` + MoveIt 2 pipeline:
    - Supports named SRDF poses, joint targets, pose targets (normal planning / Cartesian straight line)
    - Topic-based runtime control for arm and gripper
 5. `my_robot_interfaces`: Custom `PoseCommand` message for end-effector pose goals
+6. `my_arm_config`: use a standard `ros2_control` + MoveIt 2 pipeline config, rather than using the manufacturer's code
+7. `roarm_description`: roarm URDF/Xacro model
+8. `roarm_driver`: roarm URDF/Xacro model
+9. `roarm_moveit `: roarm MoveIt code from the arm manufacturer
+
 
 ## Key Packages Detail
 ### `my_robot_description`
