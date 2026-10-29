@@ -1,5 +1,5 @@
 # 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
-A complete ROS 2 Humble workspace for a **6-joint manipulator with a parallel gripper**, including robot description, MoveIt 2 planning config, hardware bringup, **custom C++ motion commander**, MoveIt2 MTC (MoveIt Task Constructor), and custom ROS 2 interfaces.
+A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), and custom ROS 2 interfaces (**using your own arm control commands rather than the code from the arm manufacturer**).
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
@@ -87,6 +87,11 @@ src/
 │   └── launch/display.launch.xml  # Quick URDF visualization only
 ├── my_robot_interfaces       # Custom ROS 2 message definitions
 │   └── msg/PoseCommand.msg   # Custom pose command with RPY + Cartesian flag
+├── my_arm_config       # Custom arm config for Roarm
+├── roarm_description       # roam URDF/Xacro model
+├── roarm_driver       # roam driver
+├── roarm_moveit       # roarm moveit, the code from the arm manufacturer
+
 ```
 
 ## System Overview
@@ -268,6 +273,31 @@ MoveGroupInterface is the core C++ API class in MoveIt2 (header: moveit/move_gro
 >It acts as a high-level wrapper to communicate with the move_group node.
 
 >You use it to command a robot planning group: set target pose / joint goal, run motion planning, execute trajectory, query robot state, perform Cartesian path planning, etc.
+
+After finishing the setup in the MSA, you need to check moveit_controllers.yaml and add the following code:
+```
+action_ns: follow_joint_trajectory
+default: true
+```
+> 📌 Concept:
+> MoveIt (client) sends trajectory goal → calls this Action Server.
+> The action type is `control_msgs/action/FollowJointTrajectory`
+> 
+> 
+> If you **do NOT write `action_ns`**, the plugin uses the **default value which IS already `follow_joint_trajectory`**
+> → So it is optional, only needed when your real controller uses a **custom action name** (uncommon).
+
+## ✅ `default: true`
+
+**Mark this controller as the DEFAULT controller**
+
+- When MoveIt TrajectoryExecutionManager picks a controller for your joints, if multiple controllers can cover the same joints, the one with `default: true` has priority
+
+Then run
+
+```
+ros2 launch my_arm_config demo.launch.py
+```
 
 ✅ In short:
 
