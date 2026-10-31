@@ -424,7 +424,11 @@ Three core stage types:
 
 ## 8. Pick and Place with MoveIt Task Constructor
 
-https://moveit.picknik.ai/humble/doc/tutorials/pick_and_place_with_moveit_task_constructor/pick_and_place_with_moveit_task_constructor.html
+It demonstrates how to chain multiple planning stages (pick, transport, place) into a single task using MoveIt Task Constructor (MTC), execute it on the Panda robot, and visualize the result in RViz.
+
+>Note: This is based on the MoveIt 2 Humble documentation (a stable, no-longer-developed release). For the current recommended version, see MoveIt Main.
+
+>https://moveit.picknik.ai/humble/doc/tutorials/pick_and_place_with_moveit_task_constructor/pick_and_place_with_moveit_task_constructor.html
 
 ## Related Projects
 
