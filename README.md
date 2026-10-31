@@ -422,6 +422,10 @@ Three core stage types:
 
 >Containers: `Serial`, `Parallel` to build task graphs.
 
+## 8. Pick and Place with MoveIt Task Constructor
+
+https://moveit.picknik.ai/humble/doc/tutorials/pick_and_place_with_moveit_task_constructor/pick_and_place_with_moveit_task_constructor.html
+
 ## Related Projects
 
 - [roarm_ws](https://github.com/Daniel-Zhang2017/roarm_ws) — real arm control and motion
