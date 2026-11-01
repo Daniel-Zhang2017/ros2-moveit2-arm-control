@@ -4,6 +4,32 @@ A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel grip
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
 >The **Commander node** calls MoveIt 2 through the MoveIt API to perform kinematics computation, collision detection, and trajectory planning. The resulting joint trajectory is then sent through the MoveIt controller to the trajectory controller in ros2_control, which further converts it into control commands for the real robotic arm or simulated hardware. During hardware execution, state information such as joint positions and velocities is continuously returned; ros2_control publishes these states as joint states, and robot_state_publisher then publishes TF coordinate transforms in combination with the URDF model, allowing MoveIt and RViz to obtain the current robot pose.
+>
+## video demos
+
+*Video 1: Arm motion demo, recorded at 100 Hz joint states: ros2 bag record /joint_states*
+
+https://github.com/user-attachments/assets/a827dda0-dc04-47a8-88f3-8c268dc0bbe3
+
+*Video 2: Roarm control and motion: Cartesian path*
+
+https://github.com/user-attachments/assets/c8ac123a-d9f0-467d-afe4-b9e7536e7b07
+
+*Video 3: Real arm Cartesian path*
+
+https://github.com/user-attachments/assets/b6f72d57-6e1e-4b73-a8a3-074690e890e5
+
+*Video 4: Real robotic arm control and motion*
+
+https://github.com/user-attachments/assets/7caf02ca-e448-450b-a686-7556f6876fa5
+
+*Video 5: Panda_moveit_avoid_collision*
+
+https://github.com/user-attachments/assets/13b10d0f-8d62-40c9-ade0-d3b75a0c3b4d
+
+*Video 6: Panda_moveit pick and place*
+
+https://github.com/user-attachments/assets/c0fe0ebf-7c51-49d2-b423-7d7f966c1ba7
 
 **Robotic Arm Control System Architecture**
 ```
@@ -52,25 +78,6 @@ cd ros2-moveit2-arm-control
 colcon build
 source install/setup.bash
 ```
-*Video 1: Arm motion demo, recorded at 100 Hz joint states: ros2 bag record /joint_states*
-
-https://github.com/user-attachments/assets/a827dda0-dc04-47a8-88f3-8c268dc0bbe3
-
-*Video 2: Roarm control and motion: Cartesian path*
-
-https://github.com/user-attachments/assets/c8ac123a-d9f0-467d-afe4-b9e7536e7b07
-
-*Video 3: Real arm Cartesian path*
-
-https://github.com/user-attachments/assets/b6f72d57-6e1e-4b73-a8a3-074690e890e5
-
-*Video 4: Real robotic arm control and motion*
-
-https://github.com/user-attachments/assets/7caf02ca-e448-450b-a686-7556f6876fa5
-
-*Video 5: Panda_moveit_avoid_collision*
-
-https://github.com/user-attachments/assets/13b10d0f-8d62-40c9-ade0-d3b75a0c3b4d
 
 ## Repository Structure
 ```
