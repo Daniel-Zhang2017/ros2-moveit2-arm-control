@@ -68,6 +68,10 @@ https://github.com/user-attachments/assets/b6f72d57-6e1e-4b73-a8a3-074690e890e5
 
 https://github.com/user-attachments/assets/7caf02ca-e448-450b-a686-7556f6876fa5
 
+*Video 5: Panda_moveit_avoid_collision*
+
+https://github.com/user-attachments/assets/13b10d0f-8d62-40c9-ade0-d3b75a0c3b4d
+
 ## Repository Structure
 ```
 src/
