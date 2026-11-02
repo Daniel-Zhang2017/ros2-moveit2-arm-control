@@ -1,108 +1,106 @@
-\#LeRobot 使用指南（RoArm-M3 实践版）
+\# LeRobot 使用指南（RoArm-M3 实践版）
 
 
 
-https://img.shields.io/badge/LeRobot-v0.6+-blue
+\[!\[LeRobot](https://img.shields.io/badge/LeRobot-v0.6+-blue)](https://github.com/huggingface/lerobot)
 
-https://img.shields.io/badge/Python-3.12+-green
+\[!\[Python](https://img.shields.io/badge/Python-3.12+-green)](https://www.python.org/)
 
-https://img.shields.io/badge/ROS2-Humble-orange
+\[!\[ROS2](https://img.shields.io/badge/ROS2-Humble-orange)](https://docs.ros.org/en/humble/)
 
-https://img.shields.io/badge/License-Apache\_2.0-yellow
+\[!\[License](https://img.shields.io/badge/License-Apache\_2.0-yellow)](LICENSE)
 
 
 
-基于 RoArm-M3 + MoveIt 2 + 双 USB 相机的 LeRobot 数据采集、训练与部署全流程实践。
+> 基于 \*\*RoArm-M3 + MoveIt 2 + 双 USB 相机\*\*的 LeRobot 数据采集、训练与部署全流程实践。
 
 
 
-适用人群：使用 RoArm-M3 或其他 MoveIt 2 兼容机械臂、希望用 LeRobot 做模仿学习的开发者。
+\*\*适用人群\*\*：使用 RoArm-M3 或其他 MoveIt 2 兼容机械臂、希望用 LeRobot 做模仿学习的开发者。
 
 
 
-快速跳转：硬件清单 · 快速验证 · 环境安装 · 录制数据 · 训练 ACT · 部署推理 · 检查清单 · 常见问题
+\*\*快速跳转\*\*：\[硬件清单](#硬件与环境要求) · \[快速验证](#快速验证10-分钟) · \[环境安装](#环境安装推荐-conda) · \[录制数据](#4-录制数据) · \[训练 ACT](#6-如何训练不同策略之间的分别及硬件要求) · \[部署推理](#7-真机上部署) · \[检查清单](#上线前检查清单) · \[常见问题](#常见问题)
 
 
 
-\##目录
+\---
 
 
 
-硬件与环境要求
+\## 目录
 
 
 
-快速验证（10 分钟）
+\- \[硬件与环境要求](#硬件与环境要求)
 
+\- \[快速验证（10 分钟）](#快速验证10-分钟)
 
+\- \[1. LeRobot 输出的动作是各个关节的位置吗？](#1-lerobot-输出的动作是各个关节的位置吗)
 
-1\. LeRobot 输出的动作是各个关节的位置吗？
+\- \[2. 如何使用 LeRobot？](#2-如何使用-lerobot)
 
+\- \[3. 除了手腕相机，还需要相机吗？](#3-除了手腕相机还需要相机吗)
 
+\- \[4. 录制数据](#4-录制数据)
 
-2\. 如何使用 LeRobot？
+\- \[5. 什么是 episode？](#5-什么是-episode)
 
+\- \[6. 如何训练？不同策略之间的分别及硬件要求？](#6-如何训练不同策略之间的分别及硬件要求)
 
+\- \[7. 真机上部署](#7-真机上部署)
 
-3\. 除了手腕相机，还需要相机吗？
+\- \[用 MoveIt 采集 LeRobot 格式数据](#用-moveit-采集-lerobot-格式数据)
 
+\- \[数据集结构](#数据集结构)
 
+\- \[上线前检查清单](#上线前检查清单)
 
-4\. 录制数据
+\- \[常见问题](#常见问题)
 
+\- \[License](#license)
 
 
-5\. 什么是 episode？
 
+\---
 
 
-6\. 如何训练？不同策略之间的分别及硬件要求？
 
+\## 硬件与环境要求
 
 
-7\. 真机上部署
 
+| 项目 | 要求 | 说明 |
 
+| --- | --- | --- |
 
-用 MoveIt 采集 LeRobot 格式数据
+| 机械臂 | RoArm-M3（或 MoveIt 2 兼容臂） | 需支持 ROS 2 驱动 |
 
+| 相机 | 2 个普通 USB 摄像头 | 俯视 + 手腕，640×480 @ 30fps，MJPG 格式 |
 
+| 控制电脑 | Ubuntu 22.04 + ROS 2 Humble | MoveIt 2 依赖 |
 
-数据集结构
+| 训练 GPU | Nvidia，显存 ≥ 8GB | RTX 3060 级别即可跑 ACT |
 
+| Python | 3.12+ | LeRobot 硬性要求 |
 
+| USB 带宽 | 两个相机分插不同 USB 控制器 | 避免掉帧 |
 
-上线前检查清单
 
 
+\---
 
-常见问题
 
 
+\## 快速验证（10 分钟）
 
-\##硬件与环境要求
 
-项目	要求	说明
-
-机械臂	RoArm-M3（或 MoveIt 2 兼容臂）	需支持 ROS 2 驱动
-
-相机	2 个普通 USB 摄像头	俯视 + 手腕，640×480 @ 30fps，MJPG 格式
-
-控制电脑	Ubuntu 22.04 + ROS 2 Humble	MoveIt 2 依赖
-
-训练 GPU	Nvidia，显存 ≥ 8GB	RTX 3060 级别即可跑 ACT
-
-Python	3.12+	LeRobot 硬性要求
-
-USB 带宽	两个相机分插不同 USB 控制器	避免掉帧
-
-快速验证（10 分钟）
 
 如果只想确认环境是否跑通，走这条最短路：
 
 
 
-bash
+```bash
 
 \# 1. 确认相机能读到
 
@@ -120,51 +118,73 @@ lerobot-record --robot.type=roarm\_m3 ... --control.num\_episodes=2
 
 lerobot-train --dataset.repo\_id=lerobot/aloha\_mobile\_cabinet --policy.type=act --steps=1000
 
-
-
-\###1. LeRobot 输出的动作是各个关节的位置吗？
-
-不一定。 在 LeRobot 中，VLA 模型输出的动作取决于你选择的动作空间（Action Space）配置。LeRobot 支持多种表示，关节位置只是其中一种（且通常是默认项）。
+```
 
 
 
-常见的输出形式
-
-形式	说明
-
-关节空间位置（Joint Space）	LeRobot 最常见的默认方式。输出向量通常对应各个电机（关节）的目标角度/位置，例如 \[q1, q2, q3, ..., gripper]，可以直接发给电机执行。
-
-末端执行器位姿（End-Effector Space）	输出的是机器人夹爪在笛卡尔空间中的目标位置和姿态（如 x, y, z, roll, pitch, yaw）。这种方式更直观，但通常需要借助逆运动学（IK）解算才能转换成电机指令。
-
-相对动作（Relative Actions）	输出的不是绝对目标，而是相对于当前状态的增量。例如"在当前关节角基础上 +1.0 度"，或者"末端向 X 方向移动 +2cm"。
-
-关键点：默认与可配置性
-
-虽然许多基础教程或 SO-100 等入门套件默认使用绝对关节位置，但 LeRobot 的灵活性在于可以通过 Processor 管道在关节空间和末端空间之间进行转换。因此，VLA 最终输出的具体含义，取决于你在训练或部署时选定的 action\_space 设置。
+\### 1. LeRobot 输出的动作是各个关节的位置吗？
 
 
 
-\###2. 如何使用 LeRobot？
+\*\*不一定。\*\* 在 LeRobot 中，VLA 模型输出的动作取决于你选择的\*\*动作空间（Action Space）\*\*配置。LeRobot 支持多种表示，关节位置只是其中一种（且通常是默认项）。
+
+
+
+\#### 常见的输出形式
+
+
+
+| 形式 | 说明 |
+
+| --- | --- |
+
+| \*\*关节空间位置（Joint Space）\*\* | LeRobot 最常见的默认方式。输出向量通常对应各个电机（关节）的目标角度/位置，例如 `\[q1, q2, q3, ..., gripper]`，可以直接发给电机执行。 |
+
+| \*\*末端执行器位姿（End-Effector Space）\*\* | 输出的是机器人夹爪在笛卡尔空间中的目标位置和姿态（如 `x, y, z, roll, pitch, yaw`）。这种方式更直观，但通常需要借助逆运动学（IK）解算才能转换成电机指令。 |
+
+| \*\*相对动作（Relative Actions）\*\* | 输出的不是绝对目标，而是相对于当前状态的\*\*增量\*\*。例如"在当前关节角基础上 +1.0 度"，或者"末端向 X 方向移动 +2cm"。 |
+
+
+
+\#### 关键点：默认与可配置性
+
+
+
+虽然许多基础教程或 SO-100 等入门套件默认使用\*\*绝对关节位置\*\*，但 LeRobot 的灵活性在于可以通过 Processor 管道在关节空间和末端空间之间进行转换。因此，VLA 最终输出的具体含义，取决于你在训练或部署时选定的 `action\_space` 设置。
+
+
+
+\---
+
+
+
+\### 2. 如何使用 LeRobot？
+
+
 
 使用 LeRobot 的核心流程是：
 
 
 
-text
+```text
 
 安装环境 → 连接并校准机器人 → 遥操作录制数据 → 训练策略 → 部署推理
 
+
+
 如果你没有实体机器人，也可以直接下载 Hugging Face Hub 上的公开数据集进行训练或可视化。
 
+```
+
+\*\*环境安装（推荐 Conda）\*\*
 
 
-环境安装（推荐 Conda）
 
 LeRobot 要求 Python 3.12 及以上。基础安装较轻量，需根据你的硬件补充额外依赖。
 
 
 
-bash
+```bash
 
 \# 1. 创建并激活环境
 
@@ -188,11 +208,15 @@ cd lerobot
 
 pip install -e ".\[feetech]"
 
+```
+
 注意：不同机器人需要的额外依赖不同（如 Dynamixel 电机用 .\[dynamixel]，OMX 移动操作机器人也需 Dynamixel SDK）。安装后务必检查 torch.cuda.is\_available() 是否为 True，避免 pip 覆盖了你的 GPU 版 PyTorch。
 
 
 
 连接、校准与录制数据
+
+
 
 找端口：运行 lerobot-find-port，按提示拔插 USB 线，记下主臂和从臂的端口号。
 
@@ -202,9 +226,11 @@ pip install -e ".\[feetech]"
 
 
 
-bash
+```bash
 
 lerobot-calibrate --robot-type=so100 --port=/dev/ttyUSB0
+
+```
 
 按提示将每个关节移到最小/最大位置。若有领导臂用于遥操作，也需一并校准。
 
@@ -214,7 +240,7 @@ lerobot-calibrate --robot-type=so100 --port=/dev/ttyUSB0
 
 
 
-bash
+```bash
 
 lerobot-record \\
 
@@ -232,19 +258,27 @@ lerobot-record \\
 
 &#x20; --output-dir=\~/datasets/my\_first\_dataset
 
-训练与部署
+```
+
+
+
+\*\*训练与部署\*\*
+
+
 
 训练：用 lerobot-train 命令。ACT 策略适合入门级抓放任务，收敛较快。
 
 
 
-bash
+```bash
 
 lerobot-train \\
 
 &#x20; --policy=act \\
 
 &#x20; --dataset.repo\_id=你的用户名/数据集名
+
+```
 
 若想直接用社区数据测试，可加载 lerobot/aloha\_mobile\_cabinet 等公开数据集。
 
@@ -260,7 +294,7 @@ lerobot-train \\
 
 
 
-\###3. 除了手腕相机，还需要相机吗？
+\### 3. 除了手腕相机，还需要相机吗？
 
 需要。 对于 RoArm-M3 这类机械臂，强烈建议再加一个"俯视相机"（也叫全局相机/前视相机），和你的手腕相机组成双相机方案。这是 LeRobot 社区正式采集数据时的主流配置。
 
@@ -302,13 +336,15 @@ lerobot-train \\
 
 
 
-\###4. 录制数据
+\### 4. 录制数据
 
 校准完成后，下一步就是配置相机并录制你的第一批数据集。对于 RoArm-M3，微雪（Waveshare）的官方 Wiki 提供了直接可用的命令模板。
 
 
 
-录制数据集
+\*\*录制数据集\*\*
+
+
 
 你可以先用一个简单任务（如"抓取方块放入盒子"）录制少量 episode（比如 2 集）跑通流程。核心是把两个 USB 相机的配置写进命令里。
 
@@ -318,7 +354,7 @@ lerobot-train \\
 
 
 
-bash
+```bash
 
 python lerobot/scripts/control\_robot.py \\
 
@@ -342,31 +378,43 @@ python lerobot/scripts/control\_robot.py \\
 
 &#x20; --control.push\_to\_hub=false
 
+```
+
+
+
 关键补充：上面的官方示例没有包含相机参数。你需要按之前确定的方案，把两个 USB 相机的配置加进去。参考 LeRobot 通用的写法，在命令中增加类似参数（具体设备索引请用 lerobot-find-cameras 确认）：
 
 
 
-text
+```
 
 \--robot.cameras='{ front: {type: opencv, index\_or\_path: 0, width: 640, height: 480, fps: 30, fourcc: "MJPG"}, wrist: {type: opencv, index\_or\_path: 2, width: 640, height: 480, fps: 30, fourcc: "MJPG"} }'
+
+```
 
 录制时留意终端提示：按右箭头可以提前结束当前回合进入重置，按左箭头可以丢弃当前回合重录。
 
 
 
-录制之后
+\*\*录制之后\*\*
+
+
 
 先回放检查数据质量。确认没问题后，再逐步增加 episode 数量（建议至少 50 集），然后就可以用 train.py 脚本训练 ACT 策略了。
 
 
 
-\###5. 什么是 episode？
+\### 5. 什么是 episode？
+
+
 
 在 LeRobot 的语境里，episode（回合/片段）指的是机械臂从"开始"到"结束"完整执行一次任务的整个过程。它是数据集里的基本单位。
 
 
 
-具体指什么
+\*\*具体指什么\*\*
+
+
 
 以你正在做的抓取任务为例，一个 episode 通常包含：
 
@@ -388,7 +436,9 @@ text
 
 
 
-为什么按 episode 计数
+\*\*为什么按 episode 计数?\*\*
+
+
 
 数据组织：LeRobot 数据集按 episode 划分，每个 episode 有独立的帧序列和元数据（如任务描述、成功与否）。
 
@@ -408,13 +458,13 @@ text
 
 
 
-如何训练（以 ACT 为例）
+\*\*如何训练（以 ACT 为例）\*\*
 
 确保你的数据集已录制好并推送到 Hugging Face Hub（或使用本地路径），然后运行：
 
 
 
-bash
+```bash
 
 lerobot-train \\
 
@@ -432,7 +482,11 @@ lerobot-train \\
 
 &#x20; --steps=50000
 
-关键参数说明：
+```
+
+
+
+\*\*关键参数说明\*\*：
 
 
 
@@ -452,49 +506,29 @@ lerobot-train \\
 
 
 
-不同策略的分别
+\*\*不同策略的分别\*\*
+
+
 
 LeRobot 主要支持以下几种模仿学习策略，选型取决于你的任务复杂度和硬件：
 
 
 
-ACT (Action Chunking Transformer)
+>\*\*ACT (Action Chunking Transformer)\*\*: 特点：轻量、训练快。它一次性预测未来一段动作序列（Action Chunk），能有效缓解机械臂>的抖动和累积误差。适用：你的首选。适合抓取、放置等大多数桌面操作任务。
 
 
 
-特点：轻量、训练快。它一次性预测未来一段动作序列（Action Chunk），能有效缓解机械臂的抖动和累积误差。
+>\*\*Diffusion Policy\*\*: 特点：通过扩散去噪过程生成动作，擅长处理多模态动作分布（即同一场景下可能有多种合理动作）。适用：当任务存在歧义（比如绕过障碍物有左、右两条路）时可能比 ACT 表现更好，但训练和推理通常比 ACT 慢。
 
 
 
-适用：你的首选。适合抓取、放置等大多数桌面操作任务。
+>\*\*π₀ (Pi0) / SmolVLA 等 VLA 模型\*\*: 特点：基于视觉-语言大模型，参数量大。能理解语言指令，泛化潜力更强。适用：任务复杂、需要语言引导，且你拥有大显存 GPU 或愿意使用云端算力时考虑。对于简单的固定抓取，用 VLA 属于"杀鸡用牛刀"，且训练成本高。
 
 
 
-Diffusion Policy
+\*\*硬件要求\*\*
 
 
-
-特点：通过扩散去噪过程生成动作，擅长处理多模态动作分布（即同一场景下可能有多种合理动作）。
-
-
-
-适用：当任务存在歧义（比如绕过障碍物有左、右两条路）时可能比 ACT 表现更好，但训练和推理通常比 ACT 慢。
-
-
-
-π₀ (Pi0) / SmolVLA 等 VLA 模型
-
-
-
-特点：基于视觉-语言大模型，参数量大。能理解语言指令，泛化潜力更强。
-
-
-
-适用：任务复杂、需要语言引导，且你拥有大显存 GPU 或愿意使用云端算力时考虑。对于简单的固定抓取，用 VLA 属于"杀鸡用牛刀"，且训练成本高。
-
-
-
-硬件要求
 
 显存是第一道门槛。根据 LeRobot 官方硬件指南（以 Batch Size 8 估算）：
 
@@ -512,7 +546,7 @@ Diffusion 与 VLA：显存需求显著更高。Diffusion 通常在中等范围�
 
 
 
-\###7. 真机上部署
+\### 7. 真机上部署
 
 训练完成之后，下一步就是在真机上部署模型进行推理和评估，看看它到底能不能完成你教它的任务。LeRobot 提供了两种主要方式，你可以根据是想"边跑边看效果"还是"快速验证一下"来选择。
 
@@ -520,11 +554,13 @@ Diffusion 与 VLA：显存需求显著更高。Diffusion 通常在中等范围�
 
 方式一：用 lerobot-record 录制评估数据（推荐新手）
 
+
+
 这个方式会在策略控制机械臂的同时，把评估过程也录成一份新数据集，方便你事后回放分析。关键是要使用和训练时完全相同的相机配置，否则模型会因为找不到归一化统计量而报错。
 
 
 
-bash
+```bash
 
 lerobot-record \\
 
@@ -544,15 +580,19 @@ lerobot-record \\
 
 \--policy.path 指向你训练好的 checkpoint。--dataset.repo\_id 建议以 eval\_ 开头，方便和训练数据区分。
 
+```
+
 
 
 方式二：用 lerobot-rollout 快速运行
+
+
 
 如果你只想看模型跑起来的效果，不关心录制评估数据，可以用这个命令。它会直接在真机上执行策略，默认不保存数据。
 
 
 
-bash
+```bash
 
 lerobot-rollout \\
 
@@ -572,9 +612,13 @@ lerobot-rollout \\
 
 \--duration 控制运行秒数，方便你随时喊停。
 
+```
 
 
-评估时重点看什么
+
+\*\*评估时重点看什么\*\*
+
+
 
 核心指标是成功率。让模型跑 10 次左右，数一数有几次真正完成了任务。不要只看 loss 曲线，因为 loss 低不代表机械臂在物理世界里做对了。
 
@@ -584,11 +628,13 @@ lerobot-rollout \\
 
 
 
-⚠️ 安全提醒：推理时机械臂是在无人操控的状态下全扭矩运动的。开始前清空工作区 1 米范围，手远离机械臂，并且随时准备断电。
+⚠️ \*\*安全提醒\*\*：推理时机械臂是在无人操控的状态下全扭矩运动的。开始前清空工作区 1 米范围，手远离机械臂，并且随时准备断电。
 
 
 
-用 MoveIt 采集 LeRobot 格式数据
+\*\*用 MoveIt 采集 LeRobot 格式数据\*\*
+
+
 
 LeRobot 原生流程依赖主臂遥操作，但你用 MoveIt 驱动 RoArm-M3 时，需要补一个录制节点：
 
@@ -616,13 +662,13 @@ LeRobot 原生流程依赖主臂遥操作，但你用 MoveIt 驱动 RoArm-M3 时
 
 
 
-数据集结构
+\*\*数据集结构\*\*
+
+
 
 一个 LeRobot 数据集典型包含：
 
 
-
-text
 
 episodes/
 
@@ -642,7 +688,9 @@ episodes/
 
 
 
-上线前检查清单
+\*\*上线前检查清单\*\*
+
+
 
 □ 两个相机索引已用 lerobot-find-cameras opencv 确认，未写死
 
@@ -660,7 +708,7 @@ episodes/
 
 
 
-\###常见问题
+\### 常见问题
 
 
 

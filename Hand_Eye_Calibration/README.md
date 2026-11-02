@@ -1,74 +1,72 @@
-Hand-Eye Calibration for RoArm-M3 (Eye-in-Hand)
-
-https://img.shields.io/badge/ROS2-Humble-orange
-
-https://img.shields.io/badge/easy\_handeye2-v0.5.0-blue
-
-https://img.shields.io/badge/OpenCV-Tsai--Lenz-green
+\# Hand-Eye Calibration for RoArm-M3 (Eye-in-Hand)
 
 
 
-基于 RoArm-M3 + MoveIt 2 + USB 相机的 Eye-in-Hand 手眼标定完整方案。使用 easy\_handeye2 通过 TF 采样和 OpenCV 算法求解相机到末端的静态变换。
+\[!\[ROS2](https://img.shields.io/badge/ROS2-Humble-orange)](https://docs.ros.org/en/humble/)
+
+\[!\[easy\_handeye2](https://img.shields.io/badge/easy\_handeye2-v0.5.0-blue)](https://github.com/marcoesposito1988/easy\_handeye2)
+
+\[!\[OpenCV](https://img.shields.io/badge/OpenCV-Tsai--Lenz-green)](https://opencv.org/)
 
 
 
-适用场景：手腕相机（Eye-in-Hand）配置，标定板固定于桌面，机械臂携带相机从多个位姿拍摄标定板。
+> 基于 \*\*RoArm-M3 + MoveIt 2 + USB 相机\*\*的 Eye-in-Hand 手眼标定完整方案。使用 `easy\_handeye2` 通过 TF 采样和 OpenCV 算法求解相机到末端的静态变换。
 
 
 
-前置条件：已完成相机内参标定，ROS 2 中 TF 树正常发布末端位姿与相机光学坐标系。
+\*\*适用场景\*\*：手腕相机（Eye-in-Hand）配置，标定板固定于桌面，机械臂携带相机从多个位姿拍摄标定板。
 
 
 
-目录
-
-前置检查：TF 坐标系确认
+\*\*前置条件\*\*：已完成相机内参标定，ROS 2 中 TF 树正常发布末端位姿与相机光学坐标系。
 
 
 
-快速开始
+\---
 
 
 
-安装 easy\_handeye2
+\## 目录
 
 
 
-创建标定 launch 文件
+\- \[前置检查：TF 坐标系确认](#前置检查tf-坐标系确认)
+
+\- \[快速开始](#快速开始)
+
+\- \[安装 easy\_handeye2](#安装-easy\_handeye2)
+
+\- \[创建标定 launch 文件](#创建标定-launch-文件)
+
+\- \[准备标定板](#准备标定板)
+
+\- \[启动标定流程](#启动标定流程)
+
+\- \[验证标定结果](#验证标定结果)
+
+\- \[RoArm-M3 特别注意事项](#roarm-m3-特别注意事项)
+
+\- \[常见问题](#常见问题)
+
+\- \[参考](#参考)
+
+\- \[License](#license)
 
 
 
-准备标定板
+\---
 
 
 
-启动标定流程
+\## 前置检查：TF 坐标系确认
 
 
-
-验证标定结果
-
-
-
-RoArm-M3 特别注意事项
-
-
-
-常见问题
-
-
-
-参考
-
-
-
-前置检查：TF 坐标系确认
 
 在启动标定节点前，必须确认以下坐标系名称。启动 RoArm-M3 驱动和相机节点后运行：
 
 
 
-bash
+```bash
 
 ros2 run tf2\_tools view\_frames
 
@@ -452,31 +450,27 @@ RoArm-M3 ROS2 教程 — 驱动启动与 TF 配置
 
 
 
->“眼睛标定”（相机内参标定），解决的是“相机怎么看”的问题；而完整的手眼标定，解决的是“相机看到的东西，和机械臂的手（末端）是什么位置关系”的问题。
-
->“手”在标定里的具体角色
-
-> 在 Eye-in-Hand 配置下，标定要解出的那个变换矩阵，就是相机坐标系到机械臂末端坐标系的固定转换关系。这个关系之所以能算出来，是因为你让机械臂（手）动了起来。标定过程中，机械臂带着相机移动到多个不同的位姿，每到一个位置，系统就会记录两个数据：
+"眼睛标定"（相机内参标定）解决的是"相机怎么看"的问题；而完整的手眼标定解决的是"相机看到的东西，和机械臂的手（末端）是什么位置关系"的问题。
 
 
 
-> 手的位姿：机械臂末端在基座坐标系下的位置和姿态（从 ROS TF 或 MoveIt 中读取）。
+"手"在标定里的具体角色：在 Eye-in-Hand 配置下，标定要解出的那个变换矩阵，就是相机坐标系到机械臂末端坐标系的固定转换关系。这个关系之所以能算出来，是因为你让机械臂（手）动了起来。标定过程中，机械臂带着相机移动到多个不同的位姿，每到一个位置，系统就会记录两个数据：
 
 
 
-> 眼的观测：相机看到的标定板在相机坐标系下的位姿（通过识别标定板图像计算得出）。
+手的位姿：机械臂末端在基座坐标系下的位置和姿态（从 ROS TF 或 MoveIt 中读取）。
 
 
 
->有了多组这样的“手眼”对应数据，算法（如 easy\_handeye2 内部调用的 Tsai-Lenz 或对偶四元数方法）就能解出那个固定的相机-末端变换矩阵。
+眼的观测：相机看到的标定板在相机坐标系下的位姿（通过识别标定板图像计算得出）。
+
+
+
+有了多组这样的"手眼"对应数据，算法（如 easy\_handeye2 内部调用的 Tsai-Lenz 或对偶四元数方法）就能解出那个固定的相机-末端变换矩阵。
 
 
 
 License
 
 Apache 2.0
-
-
-
-
 
