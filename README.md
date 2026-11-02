@@ -1,4 +1,4 @@
-# 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack
+# 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack + Using the roarm_m3 with LeRobot
 A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), and custom ROS 2 interfaces & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**).
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
@@ -440,6 +440,10 @@ It demonstrates how to chain multiple planning stages (pick, transport, place) i
 >Note: This is based on the MoveIt 2 Humble documentation (a stable, no-longer-developed release). For the current recommended version, see MoveIt Main.
 
 >https://moveit.picknik.ai/humble/doc/tutorials/pick_and_place_with_moveit_task_constructor/pick_and_place_with_moveit_task_constructor.html
+
+## 9. Using the roarm_m3 with LeRobot
+
+check lerobot_solutions/
 
 ## Related Projects
 
