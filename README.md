@@ -8,7 +8,7 @@
 [![C++](https://img.shields.io/badge/C++-17-blue.svg)](https://isocpp.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), and custom ROS 2 interfaces & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**).
+A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), and **using the roarm_m3 with Lerobot**.
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
