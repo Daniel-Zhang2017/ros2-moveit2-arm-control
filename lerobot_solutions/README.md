@@ -406,6 +406,30 @@ episodes/
 │   └── meta.json                  # 任务描述、帧率、成功标记
 相机键名（front / wrist）必须训练和推理完全一致，否则归一化统计量对不上。
 
+ **一个回合的数据格式**
+
+LeRobot 的数据集格式有版本差异（v2.x vs v3.0），但核心逻辑一致。一个回合（Episode）包含以下信息：
+
+1. **元数据**（描述这一回合）
+在 meta/episodes.jsonl（或 v3.0 的 parquet）里，会记录这个回合的概况：
+
+episode_index：回合编号（如 0, 1, 2...）。
+
+length：这个回合一共多少帧。
+
+tasks：对应的任务描述（比如 “pick up the cube”）。
+
+2. **帧数据（核心内容）**
+每一帧的数据通常存在 Parquet 文件里，主要包含几类字段（具体取决于你的机械臂配置）：
+
+observation.state：这一帧机械臂当前的关节位置/夹爪状态。
+
+action：这一帧发送给机械臂的目标指令（也就是你遥操作时主臂的位置）。
+
+timestamp / frame_index：时间戳和帧序号。
+
+视频流：相机画面不存进 Parquet，而是作为独立的 MP4 文件保存，元数据里只记录视频的路径或时间范围。
+
 #### 上线前检查清单
 
 □ 两个相机索引已用 lerobot-find-cameras opencv 确认，未写死
