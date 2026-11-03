@@ -377,7 +377,7 @@ lerobot-rollout \
 
 ⚠️ **安全提醒**：推理时机械臂是在无人操控的状态下全扭矩运动的。开始前清空工作区 1 米范围，手远离机械臂，并且随时准备断电。
 
-#### 用 MoveIt 采集 LeRobot 格式数据
+#### 8. 用 MoveIt 采集 LeRobot 格式数据
 
 LeRobot 原生流程依赖主臂遥操作，但你用 MoveIt 驱动 RoArm-M3 时，需要补一个录制节点：
 
@@ -479,4 +479,5 @@ RoArm-M3 的微雪官方 Wiki 中，评估推理的命令使用 --control.policy
 另外，如果你后续尝试用 lerobot-rollout 配合 RTC 推理引擎，注意 ACT 目前不兼容 RTC，会因 predict_action_chunk() 不接受 RTC 参数而报错。使用默认的 base 推理策略即可。
 
 License
+
 Apache 2.0
