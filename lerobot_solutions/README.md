@@ -202,9 +202,44 @@ python lerobot/scripts/control_robot.py \
 ```
 录制时留意终端提示：按右箭头可以提前结束当前回合进入重置，按左箭头可以丢弃当前回合重录。
 
-#### 录制之后
+#### 录制之后，先回放检查数据质量
 
-先回放检查数据质量。确认没问题后，再逐步增加 episode 数量（建议至少 50 集），然后就可以用 train.py 脚本训练 ACT 策略了。
+录制完数据后，回放检查主要分两步：先在软件里可视化看一遍，确认画面和曲线正常；再在真机上回放，验证动作是否一致。对于你自己做的机械臂，重点放在第一步即可。
+
+🖥️ **第一步**：可视化检查（最安全、最常用）
+
+LeRobot 自带查看器，可以逐帧看视频和动作曲线，不用让真机动起来。
+
+命令（在本地数据集上离线运行）：
+
+```bash
+lerobot-dataset-viz \
+  --repo-id 你的数据集名称 \
+  --mode local \
+  --episode-index 0
+--episode-index 指定要看的第几条数据（从 0 开始）。在查看器里重点看：
+```
+
+视频流：相机画面是否清晰、有没有物体出画或主臂遮挡。
+
+动作曲线：关节位置和夹爪的开合是否平滑，有没有异常跳变或卡死。
+
+🤖 第二步：真机回放（验证物理一致性）
+这一步会让机械臂重新执行录制时的动作，用来确认数据里的指令和实际运动是对得上的。
+
+命令：
+
+```bash
+lerobot-replay \
+  --robot.type=你的机械臂类型 \
+  --robot.port=/dev/ttyUSB0 \
+  --robot.id=你的机械臂ID \
+  --dataset.repo_id=你的数据集名称 \
+  --dataset.root=数据集本地路径 \
+  --dataset.episode=0
+```
+
+确认没问题后，再逐步增加 episode 数量（建议至少 50 集），然后就可以用 train.py 脚本训练 ACT 策略了。
 
 ### 5. 什么是 episode？
 
@@ -237,7 +272,7 @@ python lerobot/scripts/control_robot.py \
 如何训练（以 ACT 为例）
 确保你的数据集已录制好并推送到 Hugging Face Hub（或使用本地路径），然后运行：
 
-bash
+```bash
 lerobot-train \
   --dataset.repo_id=你的用户名/roarm_m3_dataset \
   --policy.type=act \
@@ -246,6 +281,7 @@ lerobot-train \
   --policy.device=cuda \
   --batch_size=8 \
   --steps=50000
+```
 关键参数说明：
 
 --policy.type=act：选择 ACT 策略。它会自动适配你数据集中的相机数量和关节维度。
@@ -254,7 +290,29 @@ lerobot-train \
 
 --batch_size 与 --steps：可根据显存调整。50 集左右的数据集，ACT 训练通常在几万步内收敛。
 
-如果你没有强力本地 GPU，LeRobot 也支持通过 --job.target 参数一键提交到 Hugging Face 云端 GPU 训练（按秒计费）。
+>在 LeRobot 中，Batch Size 决定每次参数更新看多少帧数据，Steps 决定总共更新多少次。对于你自制的机械臂，建议先从策略默认值起步，再根据显存和 Loss 曲线微调。
+
+📦 Batch Size：每次看多少
+它直接影响显存占用和训练稳定性。批越大梯度越稳，但显存也吃得越多。
+
+>如何设置：先保持默认值。如果遇到 CUDA 显存不足，第一个要降的就是它。
+
+>参考值：以轻量级的 ACT 策略为例，单任务起步可用 8–16。如果显存紧张，可以通过梯度累积来维持等效的大 batch，而不必强行提高单次批大小。
+
+👣 Steps：总共更新多少次
+LeRobot 官方建议先想 epoch（轮数），再换算成 steps，而不是盲目堆几十万步。模仿学习通常跑 5–10 个 epoch 就足以收敛。
+
+换算公式：
+
+总步数 = epoch数 × (总帧数 / batch_size)
+
+>针对你自制机械臂的建议：
+
+>起步策略：如果你的数据集大概 50 条左右，用 ACT 策略可以先设 30k–80k steps，通常 50k 以内就能收敛。
+
+避坑提醒：如果你把总步数设得很短（比如几千步），记得同步调低 --policy.scheduler_decay_steps，让它和总步数差不多，否则学习率不会正常衰减。
+
+>如果你没有强力本地 GPU，LeRobot 也支持通过 --job.target 参数一键提交到 Hugging Face 云端 GPU 训练（按秒计费）。
 
 #### 不同策略的分别
 
