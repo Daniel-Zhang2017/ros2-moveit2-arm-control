@@ -1,0 +1,9 @@
+surface_follower_node:
+  ros__parameters:
+    pointcloud_topic: /camera/points
+    roi_radius: 0.15
+    offset: 0.005       # 末端离拟合表面的距离(m)
+    plane_threshold: 0.002
+    frame_id: camera_link
+    target_frame: base_link
+    publish_pose_topic: /servo_node/pose_target_cmds

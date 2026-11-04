@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+<name>ros2_surface_follower</name>
+<version>0.0.0</version>
+<description>ROS2 surface follower with Panda + Gazebo depth camera</description>
+<maintainer email="da@example.com">da</maintainer>
+<license>MIT</license>
+
+<buildtool_depend>ament_cmake</buildtool_depend>
+
+<exec_depend>rclpy</exec_depend>
+<exec_depend>sensor_msgs</exec_depend>
+<exec_depend>geometry_msgs</exec_depend>
+<exec_depend>tf2_ros</exec_depend>
+<exec_depend>tf2_geometry_msgs</exec_depend>
+<exec_depend>gazebo_ros</exec_depend>
+<exec_depend>joint_state_publisher</exec_depend>
+<exec_depend>robot_state_publisher</exec_depend>
+</package>
