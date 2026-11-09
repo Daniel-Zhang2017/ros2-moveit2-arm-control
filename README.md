@@ -460,7 +460,7 @@ check lerobot_solutions/
 
 ## Related Projects
 
-- [wall_climb_force_compliance_robot](https://github.com/Daniel-Zhang2017/wall_climb_force_compliance_robot) - ROS2 Humble demo package: Manipulator constant normal force compliance (force control) on planar wall, with bump adaptation & force-based E-Stop. Built on ROS2, Nav2, MoveIt2, Gazebo. Control Algorithm Comparison (Wall-Following Force Control): P, PID, Python-based CVXPY MPC, Acados MPC. Suitable for facade inspection / cleaning / surface contact task prototype.
+- [wall_climb_force_compliance_robot](https://github.com/Daniel-Zhang2017/wall_climb_force_compliance_robot) - ROS2 Humble demo package: Manipulator constant normal force compliance (force control) on planar wall, with bump adaptation & force-based E-Stop. Built on ROS2, Nav2, MoveIt2, Movelt Servo. Control Algorithm Comparison (Wall-Following Force Control): P, PID, Python-based CVXPY MPC, Acados MPC. Suitable for facade inspection / cleaning / surface contact task prototype.
 
 - [roarm_ws](https://github.com/Daniel-Zhang2017/roarm_ws) — real arm control and motion
 
