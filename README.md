@@ -188,30 +188,6 @@ Supports joint-space, named-pose, standard MoveIt planning and local Cartesian s
 | `/joint_command` | `example_interfaces/msg/Float64MultiArray` | 6 joint angles for the arm (joint-space target) |
 | `/pose_command` | `my_robot_interfaces/msg/PoseCommand` | Pose target: `x, y, z, roll, pitch, yaw, cartesian_path` |
 
-### Published
-
-| Topic | Message Type | Description |
-| --- | --- | --- |
-| `/current_ee_pose_rpy` | `my_robot_interfaces/msg/PoseCommand` | 10 Hz end-effector feedback pose; `cartesian_path` field is always `false` for state reporting |
-
-## C++ API
-
-```
-// Move arm to a predefined named pose from SRDF
-void goToNamedTarget(const std::string & name);
-
-// Joint-space target (6 arm joint angles)
-void goToJointTarget(const std::vector<double> & joints);
-
-// Pose target
-// cartesian_path = false: standard MoveIt collision-aware planning via move_group
-// cartesian_path = true: local straight-line Cartesian path using computeCartesianPath
-void goToPoseTarget(double x, double y, double z, double roll, double pitch, double yaw, bool cartesian_path = false);
-
-// Gripper control, uses named states defined in SRDF
-void openGripper();
-void closeGripper();
-```
 
 ## Run
 ```
@@ -250,23 +226,6 @@ colcon build --packages-select my_robot_description my_moveit_config my_robot_br
 source install/setup.bash
 ```
 
-## Runtime Sequence
-
-1. Terminal 1 — launch full robot + MoveIt stack
-
-```
-ros2 launch my_robot_bringup my_robot.launch.xml
-```
-
-2. Terminal 2 — run C++ motion commander
-
-```
-ros2 run my_robot_commander_cpp commander_template
-```
-
-> 
-> The built-in demo sequence inside `main()` will run automatically once commander starts:
-> Move → close gripper → lift → return home → open gripper, then listen for topic commands.
 
 ### Send runtime commands via CLI
 
@@ -280,6 +239,10 @@ ros2 topic pub /open_gripper example_interfaces/msg/Bool "{data: false}"
 # Send 6 joint target (radians)
 ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [0, -0.785, 1.57, -0.785, 0, 0]}"
 ```
+
+**next step: building the service rather than the topic communication.**
+
+building on progress......
 
 >**Capture the RViz window into `raw_capture.mp4`**
 
@@ -299,7 +262,10 @@ ffmpeg -y -f x11grab -window_id 0x5800004 -framerate 30 -i :0.0 raw_capture.mp4
 #- `-framerate 30`: capture at 30fps
 #- Press `q` in this ffmpeg terminal to stop recording.
 ```
-# Notes: 
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+# Notes for learners: 
 
 1. The core difference between Python and XML launch files in ROS 2 lies in flexibility versus declarative simplicity. Python offers powerful programming capabilities and lower-level access, making it suitable for complex logic; XML is more concise and declarative, making it suitable for simple, straightforward startup tasks and users migrating from ROS 1.
 
@@ -363,12 +329,6 @@ default: true
 **Mark this controller as the DEFAULT controller**
 
 - When MoveIt TrajectoryExecutionManager picks a controller for your joints, if multiple controllers can cover the same joints, the one with `default: true` has priority
-
-Then run
-
-```
-ros2 launch my_arm_config demo.launch.py
-```
 
 
 ## 4. Comparison: PTP Joint Planning vs Cartesian Planning
