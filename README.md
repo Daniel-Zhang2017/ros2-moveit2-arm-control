@@ -188,22 +188,6 @@ Supports joint-space, named-pose, standard MoveIt planning and local Cartesian s
 | `/joint_command` | `example_interfaces/msg/Float64MultiArray` | 6 joint angles for the arm (joint-space target) |
 | `/pose_command` | `my_robot_interfaces/msg/PoseCommand` | Pose target: `x, y, z, roll, pitch, yaw, cartesian_path` |
 
-
-## Run
-```
-ros2 launch my_moveit_config demo.launch.py
-```
-```
-# Launch your MoveIt stack first with use_sim_time:=true
-ros2 run my_robot_commander_cpp commander_template --ros-args -p use_sim_time:=true
-```
-Then you can echo this standard topic right away:
-
-```
-ros2 topic echo /current_ee_pose_rpy
-```
-> 
-> Important: your MoveIt launch must also pass `use_sim_time:=true` for simulation clock alignment.
 ### `my_robot_interfaces`
 
 Custom message `PoseCommand.msg`:
@@ -226,6 +210,18 @@ colcon build --packages-select my_robot_description my_moveit_config my_robot_br
 source install/setup.bash
 ```
 
+## Run
+```
+ros2 launch my_moveit_config demo.launch.py
+```
+```
+# Launch your MoveIt stack first with use_sim_time:=true
+ros2 run my_robot_commander_cpp commander_template --ros-args -p use_sim_time:=true
+```
+
+> 
+> Important: your MoveIt launch must also pass `use_sim_time:=true` for simulation clock alignment.
+> 
 
 ### Send runtime commands via CLI
 
