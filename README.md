@@ -265,10 +265,9 @@ ffmpeg -y -f x11grab -window_id 0x5800004 -framerate 30 -i :0.0 raw_capture.mp4
 
 1. The core difference between Python and XML launch files in ROS 2 lies in flexibility versus declarative simplicity. Python offers powerful programming capabilities and lower-level access, making it suitable for complex logic; XML is more concise and declarative, making it suitable for simple, straightforward startup tasks and users migrating from ROS 1.
 
+2. MoveIt 2 is a widely used motion planning framework in ROS 2. It is responsible for generating motion trajectories based on robot models, joint limits, collision information, and target states, though it does not directly control the motors.
 
-> 2. MoveIt 2 is a widely used motion planning framework in ROS 2. It is responsible for generating motion trajectories based on robot models, joint limits, collision information, and target states, though it does not directly control the motors.
-
-### 3. Configure a robotic arm visually using the MoveIt Setup Assistant
+3. Configure a robotic arm visually using the MoveIt Setup Assistant
 
 MoveIt Setup Assistant (MSA) — Description
 
@@ -320,14 +319,14 @@ default: true
 > If you **do NOT write `action_ns`**, the plugin uses the **default value which IS already `follow_joint_trajectory`**
 > → So it is optional, only needed when your real controller uses a **custom action name** (uncommon).
 
-## ✅ `default: true`
+ ✅ `default: true`
 
 **Mark this controller as the DEFAULT controller**
 
 - When MoveIt TrajectoryExecutionManager picks a controller for your joints, if multiple controllers can cover the same joints, the one with `default: true` has priority
 
 
-## 4. Comparison: PTP Joint Planning vs Cartesian Planning
+4. Comparison: PTP Joint Planning vs Cartesian Planning
 
 | Feature | PTP Joint Space Planning | Cartesian Path Planning |
 |---|---|---|
@@ -345,7 +344,7 @@ default: true
 
 >Always perform full simulation validation and enable collision checking before real robot operation.
 
-# 6. Real robotic arm control and motion
+# Real robotic arm control and motion
 
 roarm_driver.py:  A **simple ROS 2 bridge node** between ROS2 `JointState` messages and the Waveshare RoArm SDK serial API.
 
@@ -374,7 +373,7 @@ ros2 run roarm_driver roarm_driver serial_port:=/dev/ttyUSB0
 
 >So the `hand_controller` (joint_trajectory_controller) outputs target positions as `/joint_states`, then this driver picks it up and forwards to hardware.
 
-## 7. MTC solves complex manipulation tasks by splitting the job into composable `Stage`s. 
+## MTC solves complex manipulation tasks by splitting the job into composable `Stage`s. 
 
 Instead of one-shot motion planning, MTC explores alternative solution branches, backtracks on failure, and manages `PlanningScene` states (attach/detach objects) automatically.
 
@@ -402,7 +401,7 @@ Three core stage types:
 
 >Containers: `Serial`, `Parallel` to build task graphs.
 
-## 8. Pick and Place with MoveIt Task Constructor
+## Pick and Place with MoveIt Task Constructor
 
 It demonstrates how to chain multiple planning stages (pick, transport, place) into a single task using MoveIt Task Constructor (MTC), execute it on the Panda robot, and visualize the result in RViz.
 
@@ -410,7 +409,7 @@ It demonstrates how to chain multiple planning stages (pick, transport, place) i
 
 >https://moveit.picknik.ai/humble/doc/tutorials/pick_and_place_with_moveit_task_constructor/pick_and_place_with_moveit_task_constructor.html
 
-## 9. Using the roarm_m3 with LeRobot
+## Using the roarm_m3 with LeRobot
 
 check lerobot_solutions/
 
