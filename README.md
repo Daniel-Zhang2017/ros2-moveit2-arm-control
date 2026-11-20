@@ -240,7 +240,7 @@ ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [
 
 building on progress......
 
->**Capture the RViz window into `raw_capture.mp4`**
+**Capture the RViz window into `raw_capture.mp4`**
 
 > Step 1: Capture RViz window (new terminal)
 
