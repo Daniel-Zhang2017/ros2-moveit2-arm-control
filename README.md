@@ -8,11 +8,15 @@
 [![C++](https://img.shields.io/badge/C++-17-blue.svg)](https://isocpp.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), and **using the roarm_m3 with Lerobot**.
+A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, hand-eye calibration, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), and **using the roarm_m3 with Lerobot**.
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
 >The **Commander node** calls MoveIt 2 through the MoveIt API to perform kinematics computation, collision detection, and trajectory planning. The resulting joint trajectory is then sent through the MoveIt controller to the trajectory controller in ros2_control, which further converts it into control commands for the real robotic arm or simulated hardware. During hardware execution, state information such as joint positions and velocities is continuously returned; ros2_control publishes these states as joint states, and robot_state_publisher then publishes TF coordinate transforms in combination with the URDF model, allowing MoveIt and RViz to obtain the current robot pose.
+
+**Cartesian force-controlled surface follower for the Franka Panda arm; please see my other repo.**
+[wall_climb_force_compliance_robot](https://github.com/Daniel-Zhang2017/wall_climb_force_compliance_robot)
+
 >
 ## video demos
 
@@ -455,6 +459,8 @@ It demonstrates how to chain multiple planning stages (pick, transport, place) i
 check lerobot_solutions/
 
 ## Related Projects
+
+- [wall_climb_force_compliance_robot](https://github.com/Daniel-Zhang2017/wall_climb_force_compliance_robot) - Manipulator constant normal force compliance (force control) on planar wall, with bump adaptation & force-based E-Stop. Built on ROS2, Rviz2, MuJoCo, MoveIt2, Movelt Servo. Control Algorithm Comparison (Wall-Following Force Control): P, PID, Python-based CVXPY MPC, Acados MPC. Suitable for facade inspection / cleaning / surface contact task prototype.
 
 - [roarm_ws](https://github.com/Daniel-Zhang2017/roarm_ws) — real arm control and motion
 
