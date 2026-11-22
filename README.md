@@ -434,5 +434,7 @@ check lerobot_solutions/
 **Debug Checklist**
 
 □ Direct ros2 action success only verifies the controller itself, not MoveIt integration.
+
 □ Ensure URDF joint definition, ros2_control controller joints, MoveIt controller joints, and SRDF group are consistent.
+
 □ Do not assign an IK solver to the gripper group.
