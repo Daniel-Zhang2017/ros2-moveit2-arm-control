@@ -8,7 +8,7 @@
 [![C++](https://img.shields.io/badge/C++-17-blue.svg)](https://isocpp.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, hand-eye calibration, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), and **using the roarm_m3 with Lerobot**.
+A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, hand-eye calibration, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces (using both ros2 topic and action communication) & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), and **using the roarm_m3 with Lerobot**.
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
@@ -104,6 +104,7 @@ src/
 ├── my_robot_commander_cpp    # C++ MoveGroupInterface motion commander node (this is your control program)
 │   └── src/
 │       ├── commander_template.cpp  # Main commander node: topic-controlled arm + gripper
+│       ├── commander_action.cpp  # Main commander node: action-controlled arm + gripper
 │       ├── test_moveit.cpp
 │       └── test2_moveit.cpp
 ├── my_robot_description      # Robot URDF / Xacro model
@@ -111,6 +112,7 @@ src/
 │   └── launch/display.launch.xml  # Quick URDF visualization only
 ├── my_robot_interfaces       # Custom ROS 2 message definitions
 │   └── msg/PoseCommand.msg   # Custom pose command with RPY + Cartesian flag
+│   └── action/ArmCommand.action   # Custom action interface
 ├── my_arm_config       # Custom arm config for Roarm
 ├── roarm_description       # roam URDF/Xacro model
 ├── roarm_driver       # roam driver
@@ -202,6 +204,31 @@ float64 yaw
 bool cartesian_path
 ```
 
+Custom action `ArmCommand.action`:
+
+```
+# goal
+uint8 command_type
+float64[] joint_target
+float64 x
+float64 y
+float64 z
+float64 roll
+float64 pitch
+float64 yaw
+bool cartesian_path
+string named_target
+bool gripper_open
+---
+# feedback
+float64 progress
+string status_msg
+---
+# result
+bool success
+string message
+```
+
 ## Build Instructions
 
 Build all packages in your ROS 2 workspace:
@@ -212,18 +239,23 @@ source install/setup.bash
 
 ## Run
 ```
-ros2 launch my_moveit_config demo.launch.py
+ros2 launch my_robot_bringup my_robot.launch.xml
 ```
 ```
-# Launch your MoveIt stack first with use_sim_time:=true
+# Launch your MoveIt stack first with use_sim_time:=true; this is using topic-control the arm and gripper
 ros2 run my_robot_commander_cpp commander_template --ros-args -p use_sim_time:=true
+```
+
+```
+# Launch your MoveIt stack first with use_sim_time:=true; this is using topic-control the arm and gripper
+ros2 run my_robot_commander_cpp commander_action --ros-args -p use_sim_time:=true
 ```
 
 > 
 > Important: your MoveIt launch must also pass `use_sim_time:=true` for simulation clock alignment.
 > 
 
-### Send runtime commands via CLI
+### Send runtime commands via CLI for ros2 topic-control the arm and gripper
 
 ```
 # Open gripper
@@ -236,9 +268,106 @@ ros2 topic pub /open_gripper example_interfaces/msg/Bool "{data: false}"
 ros2 topic pub /joint_command example_interfaces/msg/Float64MultiArray "{data: [0, -0.785, 1.57, -0.785, 0, 0]}"
 ```
 
-**next step: building the service rather than the topic communication.**
+### Send runtime commands via CLI for ros2 action-control the arm and gripper
 
-building on progress......
+#### Gripper open
+
+```
+ros2 action send_goal /arm_command my_robot_interfaces/action/ArmCommand "
+command_type: 4
+gripper_open: true
+"
+```
+
+#### Gripper close
+
+```
+ros2 action send_goal /arm_command my_robot_interfaces/action/ArmCommand "
+command_type: 4
+gripper_open: false
+"
+```
+
+#### Move to named target
+
+```
+ros2 action send_goal /arm_command my_robot_interfaces/action/ArmCommand "
+command_type: 3
+named_target: home
+"
+```
+
+#### Joint target
+
+```
+ros2 action send_goal /arm_command my_robot_interfaces/action/ArmCommand "
+command_type: 1
+joint_target: [0.0, -1.57, 0.0, -1.57, 0.0, 0.0]
+"
+```
+
+#### Cartesian pose (normal IK)
+
+```
+ros2 action send_goal /arm_command my_robot_interfaces/action/ArmCommand "
+command_type: 2
+x: 0.4
+y: 0.0
+z: 0.3
+roll: 0.0
+pitch: 0.0
+yaw: 0.0
+cartesian_path: false
+"
+```
+
+### Cartesian straight line
+
+```
+ros2 action send_goal /arm_command my_robot_interfaces/action/ArmCommand "
+command_type: 2
+x: 0.4
+y: 0.0
+z: 0.3
+roll: 0.0
+pitch: 0.0
+yaw: 0.0
+cartesian_path: true
+"
+```
+
+#### Check / Debug
+
+```
+ros2 action list
+ros2 action info /arm_command
+```
+
+#### Action Definition Mapping
+
+`command_type`:
+
+- `1` → joint target
+- `2` → Cartesian pose
+- `3` → named target
+- `4` → gripper control
+
+Feedback:
+
+- `success`: bool
+- `message`: string
+
+Result:
+
+- `progress`: double
+- `status_msg`: string
+
+#### Notes
+
+- Units: meters, radians
+- `cartesian_path: true` uses `computeCartesianPath`; may fail if the straight path is not reachable
+- The server rejects a new goal if one is already active
+- Calling stop on cancel request
 
 **Capture the RViz window into `raw_capture.mp4`**
 
@@ -446,3 +575,30 @@ Note: If you are using a mimic joint, uncomment this line.
 □ Ensure URDF joint definition, ros2_control controller joints, MoveIt controller joints, and SRDF group are consistent.
 
 □ Do not assign an IK solver to the gripper group.
+
+2. **When Action fits**
+
+ROS 2 Action is designed for long-running goals with:
+
+- a goal request (target pose / joint target / gripper command)
+- periodic feedback
+- a final result (success / failure code)
+- explicit cancel
+
+That matches robotic arm motion very well. A caller can:
+
+- send a motion goal
+- receive feedback during movement
+- wait for success or failure
+- cancel the goal if needed
+
+This aligns naturally with MoveIt’s “plan then execute” workflow.
+
+**But: Action is not always the only choice**
+
+You can still keep topics for these cases:
+
+- High-frequency streaming setpoints, e.g. teleop jogging, impedance control, continuous velocity commands.
+- State observation: publish actual joint state, end-effector pose, status.
+
+The bad fit is using one-shot topic messages as “execute this planned motion command”.
