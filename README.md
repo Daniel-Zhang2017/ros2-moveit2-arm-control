@@ -421,7 +421,7 @@ check lerobot_solutions/
 
 - [ros2-robotics-projects](https://github.com/Daniel-Zhang2017/ros2-robotics-projects) — autonomous mobile robots and robotic arms
 
-## notes for learners
+## Notes for learners
 
 1.**Mimic Joint & Gripper Debug Note**
 - A `<mimic>` joint in URDF / Xacro is a **passive, coupled joint**. It does not receive its own independent command. Its position is mathematically slaved to another “master” joint:
@@ -432,6 +432,7 @@ check lerobot_solutions/
 </joint>
 ```
 **Debug Checklist**
+
 □ Direct ros2 action success only verifies the controller itself, not MoveIt integration.
 □ Ensure URDF joint definition, ros2_control controller joints, MoveIt controller joints, and SRDF group are consistent.
 □ Do not assign an IK solver to the gripper group.
