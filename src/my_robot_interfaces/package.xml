@@ -4,13 +4,16 @@
   <name>my_robot_interfaces</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="3246689874@qq.com">rachel</maintainer>
+  <maintainer email="hhzhang2016@outlook.com">daniel</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-
   <buildtool_depend>rosidl_default_generators</buildtool_depend>
+  <buildtool_depend>action_msgs</buildtool_depend>
+
+  <depend>action_msgs</depend>
   <exec_depend>rosidl_default_runtime</exec_depend>
+
   <member_of_group>rosidl_interface_packages</member_of_group>
 
   <test_depend>ament_lint_auto</test_depend>

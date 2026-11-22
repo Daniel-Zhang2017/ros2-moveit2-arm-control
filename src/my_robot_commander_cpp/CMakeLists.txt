@@ -52,11 +52,26 @@ ament_target_dependencies(
   my_robot_interfaces
 )
 
+add_executable(commander_action src/commander_action.cpp)
+
+ament_target_dependencies(
+  commander_action
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  example_interfaces
+  geometry_msgs
+  moveit_msgs
+  tf2
+  my_robot_interfaces
+)
+
 install(
   TARGETS
     test_moveit
     test2_moveit
     commander_template
+    commander_action
   DESTINATION lib/${PROJECT_NAME}
 )
 
