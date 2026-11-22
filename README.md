@@ -242,12 +242,12 @@ source install/setup.bash
 ros2 launch my_robot_bringup my_robot.launch.xml
 ```
 ```
-# Launch your MoveIt stack first with use_sim_time:=true; this is using topic-control the arm and gripper
+# Launch your MoveIt stack first with use_sim_time:=true; this is using ros2 topic-control the arm and gripper
 ros2 run my_robot_commander_cpp commander_template --ros-args -p use_sim_time:=true
 ```
 
 ```
-# Launch your MoveIt stack first with use_sim_time:=true; this is using topic-control the arm and gripper
+# This is using ros2 action-control the arm and gripper (Better than topic-control)
 ros2 run my_robot_commander_cpp commander_action --ros-args -p use_sim_time:=true
 ```
 
@@ -344,23 +344,19 @@ ros2 action info /arm_command
 ```
 
 #### Action Definition Mapping
+>`command_type`:
+> - `1` → joint target
+> - `2` → Cartesian pose
+> - `3` → named target
+> - `4` → gripper control
 
-`command_type`:
+> Feedback:
+> - `success`: bool
+> - `message`: string
 
-- `1` → joint target
-- `2` → Cartesian pose
-- `3` → named target
-- `4` → gripper control
-
-Feedback:
-
-- `success`: bool
-- `message`: string
-
-Result:
-
-- `progress`: double
-- `status_msg`: string
+> Result:
+> - `progress`: double
+> - `status_msg`: string
 
 #### Notes
 
