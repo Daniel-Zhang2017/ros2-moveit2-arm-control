@@ -431,6 +431,14 @@ check lerobot_solutions/
   <mimic joint="master_joint" multiplier="-1.0" offset="0.0"/>
 </joint>
 ```
+
+In **ros2-moveit2-arm-control/src/my_robot_description/urdf/gripper.xacro**, there is a commented line:
+
+```xml
+<!-- <mimic joint="gripper_left_finger_joint" multiplier="-1.0"/> -->
+```
+Note: If you are using a mimic joint, uncomment this line.
+
 **Debug Checklist**
 
 □ Direct ros2 action success only verifies the controller itself, not MoveIt integration.
