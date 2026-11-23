@@ -72,6 +72,13 @@ install(
     test2_moveit
     commander_template
     commander_action
+    DESTINATION lib/${PROJECT_NAME}
+)
+
+# ✅ Python script 单独用 PROGRAMS
+install(PROGRAMS
+  scripts/hand_gesture_arm_action_ctl.py
+  scripts/hand_gesture_arm_topic_ctl.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
