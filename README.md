@@ -1,4 +1,4 @@
-# 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack + Using the roarm_m3 with LeRobot
+# 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack + Arm Hand Gesture Teleoperation + Using the roarm_m3 with LeRobot
 
 [![LeRobot](https://img.shields.io/badge/LeRobot-v0.6+-blue)](https://github.com/huggingface/lerobot)
 [![Python](https://img.shields.io/badge/Python-3.12+-green)](https://www.python.org/)
@@ -8,11 +8,16 @@
 [![C++](https://img.shields.io/badge/C++-17-blue.svg)](https://isocpp.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, hand-eye calibration, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces (using both ros2 topic and action communication) & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), and **using the roarm_m3 with Lerobot**.
+A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, hand-eye calibration, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces (using both ros2 topic and action communication) & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), **Arm Hand Gesture Teleoperation** and **using the roarm_m3 with Lerobot**.
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
 >The **Commander node** calls MoveIt 2 through the MoveIt API to perform kinematics computation, collision detection, and trajectory planning. The resulting joint trajectory is then sent through the MoveIt controller to the trajectory controller in ros2_control, which further converts it into control commands for the real robotic arm or simulated hardware. During hardware execution, state information such as joint positions and velocities is continuously returned; ros2_control publishes these states as joint states, and robot_state_publisher then publishes TF coordinate transforms in combination with the URDF model, allowing MoveIt and RViz to obtain the current robot pose.
+> **Arm Hand Gesture Teleoperation**：Package: `my_robot_commander_cpp`：This package provides hand-gesture teleoperation for a robotic arm controlled by MoveIt2. There are two independent Python teleoperation frontends sharing the same C++ commander backend:
+
+> - `hand_gesture_arm_action_ctl.py`: uses a ROS2 Action server to send arm motion goals
+> - `hand_gesture_arm_topic_ctl.py`: uses ROS2 topics, throttled to 5 Hz for pose commands
+> -Hand tracking is implemented with MediaPipe Hand Landmarker.
 
 **Cartesian force-controlled surface follower for the Franka Panda arm; please see my other repo.**
 [wall_climb_force_compliance_robot](https://github.com/Daniel-Zhang2017/wall_climb_force_compliance_robot)
@@ -107,6 +112,10 @@ src/
 │       ├── commander_action.cpp  # Main commander node: action-controlled arm + gripper
 │       ├── test_moveit.cpp
 │       └── test2_moveit.cpp
+│       └── scripts/
+│             └── hand_gesture_arm_action_ctl.py    # Action-based teleop
+│             └── hand_gesture_arm_topic_ctl.py     # Topic-based teleop (5 Hz)
+│             └── hand_landmarker.task              # MediaPipe hand landmarker model
 ├── my_robot_description      # Robot URDF / Xacro model
 │   ├── urdf/                 # Arm, gripper, common properties, ros2_control xacro
 │   └── launch/display.launch.xml  # Quick URDF visualization only
@@ -231,6 +240,11 @@ string message
 
 ## Build Instructions
 
+Install Python dependencies:
+
+```bash
+pip3 install mediapipe opencv-python
+```
 Build all packages in your ROS 2 workspace:
 ```
 colcon build --packages-select my_robot_description my_moveit_config my_robot_bringup my_robot_interfaces my_robot_commander_cpp
@@ -357,6 +371,22 @@ ros2 action info /arm_command
 > Result:
 > - `progress`: double
 > - `status_msg`: string
+
+### ROS2 MoveIt2 Arm Hand Gesture Teleoperation
+
+#### Action version
+
+```
+ros2 run my_robot_commander_cpp hand_gesture_arm_action_ctl.py
+```
+
+#### Topic version (5 Hz throttled)
+
+```
+ros2 run my_robot_commander_cpp hand_gesture_arm_topic_ctl.py
+```
+
+Press `q` in the OpenCV preview window to exit the Python teleop node.
 
 #### Notes
 
