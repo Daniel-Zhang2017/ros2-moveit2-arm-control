@@ -8,7 +8,7 @@
 [![C++](https://img.shields.io/badge/C++-17-blue.svg)](https://isocpp.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, hand-eye calibration, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces (using both ros2 topic and action communication) & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), **Arm Hand Gesture Teleoperation** and **using the roarm_m3 with Lerobot**.
+A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, hand-eye calibration, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces (using both ros2 topic and action communication) & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), **Singularity handling**, Arm Hand Gesture Teleoperation and **using the roarm_m3 with Lerobot**.
 
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
@@ -628,3 +628,62 @@ You can still keep topics for these cases:
 - State observation: publish actual joint state, end-effector pose, status.
 
 The bad fit is using one-shot topic messages as “execute this planned motion command”.
+
+3. ## Singularity handling
+
+MoveIt2 分两条路线：**Move Group 预规划** 和 **MoveIt Servo 实时伺服**，二者能力不一样。
+
+### A. MoveIt Servo（实时 teleop / Cartesian twist）
+
+Servo 是最直接做奇异点在线处理的模块：它通过雅可比矩阵的条件数（condition number）判断是否靠近奇异；条件数变大代表雅可比接近奇异、末端微小运动对应关节大速度。参数在 `servo_parameters.yaml` 配置：
+
+- `lower_singularity_threshold`：进入该阈值开始自动减速缩放速度
+- `hard_stop_singularity_threshold`：达到该阈值直接停止伺服
+- `leaving_singularity_threshold_multiplier`：离开奇异区时用更高阈值，防止在边界反复抖动[MoveIt 2](https://moveit.picknik.ai/humble/api/html/servo__parameters_8cpp_source.html?f_link_type=f_linkinlinenote&flow_extra=eyJkb2NfaWQiOiJkMTFlM2M0ZTQ2NGIzNGFjLWY0ZjQzNjRiNWRkZWRmNTUiLCJpbmxpbmVfZGlzcGxheV9wb3NpdGlvbiI6MCwiZG9jX3Bvc2l0aW9uIjowfQ%3D%3D)
+
+Servo 的行为是**限速–减速–停机**，不是自动绕开奇异；IK 可以走 Jacobian 逆或者配置 IK plugin。
+
+### B Move Group / MTC 预规划
+
+原生 OMPL 等通用规划器**没有专门的 “奇异点检测器”**。做法是：
+
+- 依赖 IK 求解器返回可行解，尽量不采样奇异构型；
+- 加入 kinematic constraints、joint limits、软限位，把危险区域排除；
+- 对 Cartesian path，使用 Pilz Industrial Motion Planner，它支持 Cartesian limits，适合直线轨迹；
+- 评估轨迹时额外校验雅可比条件数，在应用层 reject 或重规划；
+- 选择冗余解：很多 IK 可以返回多个解，规划时挑选远离奇异的关节构型。
+
+### 补充工程手段
+
+- 预标定机器人奇异位姿表，在状态机里增加禁区；
+- 设计任务几何，尽量让手术 / 操作路径避开 wrist singularity、shoulder singularity；
+- 力控辅助：靠近奇异时切换到关节空间控制，或者降低 Cartesian 增益；
+- 自己写回调约束：`moveit_msgs/Constraints` + 自定义 validity checker。
+
+## Safety boundary
+
+安全边界是多层叠加，MoveIt2 本身是软件层，不是替代硬件急停。
+
+### Joint‑space boundary
+
+- URDF / SRDF 写硬关节位置范围；
+- joint limits yaml 配置位置、速度、加速度、jerk；
+- soft joint limits：提前减速缓冲，避免冲到硬限位；
+- Servo 的 `joint_limit_margin`：给限位预留安全余量，靠近时降速。
+
+### Cartesian / workspace boundary
+
+MoveIt 支持几种方式：
+
+- `PositionConstraint`：把末端或某 link 限制在一个空间区域（box /sphere 等），规划器会校验；
+- Pilz planner 的 Cartesian limits，限制末端速度、路径范围；
+- 把静态安全盒 / 平面加到 planning scene（`planning_scene` collision object），规划和 Servo 碰撞检查会避开；
+- 应用层监控：持续读取 end‑effector pose，越界则 cancel trajectory、停止 Servo、触发保护；
+- 对手术机器人：额外定义 sterile volume、禁止进入区，在仿真 + 台架测试验证。
+
+### Collision and runtime safety
+
+- Servo 自带 proximity‑based collision scaling：靠近自碰撞或场景物体时减速；
+- Move Group 规划时默认做碰撞检查；
+- 外部叠加：ros2_control 层限位、硬件急停、力阈值 E‑Stop、超时保护（Servo `incoming_command_timeout`）；
+- 日志、状态上报、故障响应流程，符合医疗设备验证习惯。
