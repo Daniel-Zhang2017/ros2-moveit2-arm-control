@@ -629,7 +629,7 @@ You can still keep topics for these cases:
 
 The bad fit is using one-shot topic messages as “execute this planned motion command”.
 
-3. ## Singularity handling
+3. ## Singularity handling and Safety boundary
 
 MoveIt2 分两条路线：**Move Group 预规划** 和 **MoveIt Servo 实时伺服**，二者能力不一样。
 
@@ -656,7 +656,7 @@ Servo 的行为是**限速–减速–停机**，不是自动绕开奇异；IK �
 ### 补充工程手段
 
 - 预标定机器人奇异位姿表，在状态机里增加禁区；
-- 设计任务几何，尽量让手术 / 操作路径避开 wrist singularity、shoulder singularity；
+- 设计任务几何，尽量让操作路径避开 wrist singularity、shoulder singularity；
 - 力控辅助：靠近奇异时切换到关节空间控制，或者降低 Cartesian 增益；
 - 自己写回调约束：`moveit_msgs/Constraints` + 自定义 validity checker。
 
