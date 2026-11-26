@@ -414,6 +414,12 @@ ffmpeg -y -f x11grab -window_id 0x5800004 -framerate 30 -i :0.0 raw_capture.mp4
 #- Press `q` in this ffmpeg terminal to stop recording.
 ```
 
+To be added:
+
+一是一个可在 Humble/Jazzy 跑的极简 ROS2 RCM 约束节点（Python 或 C++），
+
+二是 MoveIt2 + `moveit_servo` 做软件 RCM 的 launch + 配置流程
+
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 # Notes for learners: 
@@ -687,3 +693,14 @@ MoveIt 支持几种方式：
 - Move Group 规划时默认做碰撞检查；
 - 外部叠加：ros2_control 层限位、硬件急停、力阈值 E‑Stop、超时保护（Servo `incoming_command_timeout`）；
 - 日志、状态上报、故障响应流程，符合医疗设备验证习惯。
+
+> 4. ## RCM
+
+  > - **RCM (Remote Center of Motion)** is a fundamental kinematic constraint for minimally invasive surgical robots. The surgical instrument passes through a fixed trocar port; the instrument must pivot about this pivot point without lateral sliding at the port, to avoid tissue injury.
+
+> -There are two categories:
+
+> -1. **Mechanical RCM**: A dedicated parallel or linkage mechanism physically enforces the pivot.
+> -2. **Software RCM**: A general redundant manipulator (e.g., 7-DOF collaborative arm) uses constrained kinematics to satisfy the RCM rule in software. This is widely studied with ROS2.
+
+> -ROS2 serves as the distributed software framework to integrate the whole robotic system. Compared with ROS1, its DDS-based communication, configurable QoS, real-time-friendly interfaces and modular `ros2_control` stack make it suitable for surgical robot research.
