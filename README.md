@@ -10,6 +10,8 @@
 
 A complete ROS 2 Humble workspace for a 6-joint manipulator with a parallel gripper, including the robot description, MoveIt 2 planning configuration, hardware bringup, hand-eye calibration, a custom C++ motion commander, MoveIt 2 MTC (MoveIt Task Constructor), custom ROS 2 interfaces (using both ros2 topic and action communication) & pipeline (**using your own arm control commands rather than the code from the arm manufacturer**), **Singularity handling**, Arm Hand Gesture Teleoperation and **using the roarm_m3 with Lerobot**.
 
+Additionally, the **RCM (Remote Center of Motion) for minimally invasive surgical robots** is noted and built (work in progress).
+
 >In an actual robotic arm system, other ROS 2 nodes can send joint targets, end-effector poses, or grasping tasks to the **Commander node via topics, services, or actions**. 
 
 >The **Commander node** calls MoveIt 2 through the MoveIt API to perform kinematics computation, collision detection, and trajectory planning. The resulting joint trajectory is then sent through the MoveIt controller to the trajectory controller in ros2_control, which further converts it into control commands for the real robotic arm or simulated hardware. During hardware execution, state information such as joint positions and velocities is continuously returned; ros2_control publishes these states as joint states, and robot_state_publisher then publishes TF coordinate transforms in combination with the URDF model, allowing MoveIt and RViz to obtain the current robot pose.
