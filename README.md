@@ -1,4 +1,4 @@
-# 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack + Arm Hand Gesture Teleoperation + Using the roarm_m3 with LeRobot
+# 6-DoF Robotic Arm ROS 2 + MoveIt 2 Stack + Arm Hand Gesture Teleoperation + Using the roarm_m3 with LeRobot + RCM for surgical robots
 
 [![LeRobot](https://img.shields.io/badge/LeRobot-v0.6+-blue)](https://github.com/huggingface/lerobot)
 [![Python](https://img.shields.io/badge/Python-3.12+-green)](https://www.python.org/)
