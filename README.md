@@ -24,6 +24,8 @@ Additionally, the **RCM (Remote Center of Motion) for minimally invasive surgica
 **Cartesian force-controlled surface follower for the Franka Panda arm; please see my other repo.**
 [wall_climb_force_compliance_robot](https://github.com/Daniel-Zhang2017/wall_climb_force_compliance_robot)
 
+**demo and instruction for surgical robots**: to be added.
+
 >
 ## video demos
 
